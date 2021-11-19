@@ -25,7 +25,7 @@ namespace StateDesignPattern.Logic.OrderStates
     {
       return preconditionsMet()
         ? (new Canceled(), transitionFunc())
-        :(this, Result.Failure("Preconditions not met to change from 'New' to 'Canceled'."));
+        : (this, Result.Failure("Preconditions not met to change from 'New' to 'Canceled'."));
     }
 
     public (IOrderState state, Result result) UpdateItems(Func<Result> updateItems)

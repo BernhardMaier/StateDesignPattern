@@ -99,7 +99,7 @@ namespace StateDesignPattern.Tests.OrderStates
       }
     
       [Fact]
-      public void returns_the_active_state_and_success_result_if_prerequisites_are_met()
+      public void returns_the_cancele_state_and_success_result_if_prerequisites_are_met()
       {
         var (state, result) = _newState.Cancel(
           () => true,
