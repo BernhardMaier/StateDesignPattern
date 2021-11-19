@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using StateDesignPattern.Logic;
@@ -18,18 +17,19 @@ namespace StateDesignPattern.Tests
       order.Vehicle.Should().BeEmpty();
       order.Items.Should().HaveCount(0);
     }
-    
+
     [Fact]
     public void Initial_order_state_is_new()
     {
       var order = new Order();
-      
+
       order.CurrentState.Should().Be(nameof(New));
     }
 
     public class Order_in_state_new
     {
       private readonly Order _order;
+
       public Order_in_state_new()
       {
         _order = new Order();
@@ -75,7 +75,7 @@ namespace StateDesignPattern.Tests
       [Fact]
       public void can_not_update_items()
       {
-        var result = _order.UpdateItems(new List<string>{ "Sample" });
+        var result = _order.UpdateItems(new List<string> { "Sample" });
 
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("Items can not be updated in state 'New'.");
@@ -148,8 +148,8 @@ namespace StateDesignPattern.Tests
 
     public class Order_in_state_active
     {
-      private readonly Order _order;
       private const string InitialCustomer = "John Doe";
+      private readonly Order _order;
 
       public Order_in_state_active()
       {
@@ -179,7 +179,7 @@ namespace StateDesignPattern.Tests
       [Fact]
       public void can_be_completed_if_prerequisites_are_met()
       {
-        _order.UpdateItems(new List<string>{ "Sample" });
+        _order.UpdateItems(new List<string> { "Sample" });
         var result = _order.Complete();
 
         result.IsSuccess.Should().BeTrue();

@@ -4,8 +4,9 @@ namespace StateDesignPattern.Logic.OrderStates
 {
   public static class OrderStateHelper
   {
-    public static IOrderState Instantiate(int orderStateTypeId) =>
-      orderStateTypeId switch
+    public static IOrderState Instantiate(int orderStateTypeId)
+    {
+      return orderStateTypeId switch
       {
         (int)OrderStateType.New => new New(),
         (int)OrderStateType.Active => new Active(),
@@ -13,5 +14,6 @@ namespace StateDesignPattern.Logic.OrderStates
         (int)OrderStateType.Canceled => new Canceled(),
         _ => new New()
       };
+    }
   }
 }

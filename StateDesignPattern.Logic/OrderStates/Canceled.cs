@@ -8,7 +8,7 @@ namespace StateDesignPattern.Logic.OrderStates
   {
     public string Name => nameof(Canceled);
     public OrderStateType Type => OrderStateType.Canceled;
-    
+
     public (IOrderState state, Result result) Activate(Func<bool> preconditionsMet, Func<Result> transitionFunc)
     {
       return (this, Result.Failure("State can not be changed to 'Active'."));
@@ -49,6 +49,5 @@ namespace StateDesignPattern.Logic.OrderStates
     {
       return (this, Result.Failure("Vehicle can not be removed in state 'Canceled'."));
     }
-
   }
 }

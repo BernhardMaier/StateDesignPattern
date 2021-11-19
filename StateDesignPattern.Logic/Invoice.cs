@@ -4,6 +4,5 @@ namespace StateDesignPattern.Logic
 {
   public class Invoice : IInvoice
   {
-    
   }
 }

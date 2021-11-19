@@ -6,7 +6,7 @@ namespace StateDesignPattern.Logic.Interfaces
   public interface IOrder
   {
     string CurrentState { get; }
-    
+
     Result Activate();
     Result<Invoice> Complete();
     Result Cancel();

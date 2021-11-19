@@ -8,6 +8,7 @@ namespace StateDesignPattern.Logic.OrderStates
   {
     public string Name => nameof(New);
     public OrderStateType Type => OrderStateType.New;
+
     public (IOrderState state, Result result) Activate(Func<bool> preconditionsMet, Func<Result> transitionFunc)
     {
       return preconditionsMet()

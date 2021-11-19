@@ -8,7 +8,7 @@ namespace StateDesignPattern.Logic.OrderStates
   {
     public string Name => nameof(Completed);
     public OrderStateType Type => OrderStateType.Completed;
-    
+
     public (IOrderState state, Result result) Activate(Func<bool> preconditionsMet, Func<Result> transitionFunc)
     {
       return (this, Result.Failure("State can not be changed to 'Active'."));
