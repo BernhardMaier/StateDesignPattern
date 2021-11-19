@@ -8,7 +8,7 @@ namespace StateDesignPattern.Logic.OrderStates
   {
     public string Name => nameof(Active);
     public OrderStateType Type => OrderStateType.Active;
-    
+
     public (IOrderState state, Result result) Activate(Func<bool> preconditionsMet, Func<Result> transitionFunc)
     {
       return (this, Result.Failure("State is already 'Active'."));

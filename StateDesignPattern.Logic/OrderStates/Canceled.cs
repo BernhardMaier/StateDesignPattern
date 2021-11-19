@@ -32,7 +32,7 @@ namespace StateDesignPattern.Logic.OrderStates
 
     public (IOrderState state, Result result) ChangeCustomer(Func<Result> changeCustomer)
     {
-      return (this, Result.Failure("Customer can not be updated in state 'Canceled'."));
+      return (this, Result.Failure("Customer can not be changed in state 'Canceled'."));
     }
 
     public (IOrderState state, Result result) RemoveCustomer(Func<Result> removeCustomer)
@@ -42,7 +42,7 @@ namespace StateDesignPattern.Logic.OrderStates
 
     public (IOrderState state, Result result) ChangeVehicle(Func<Result> changeVehicle)
     {
-      return (this, Result.Failure("Vehicle can not be updated in state 'Canceled'."));
+      return (this, Result.Failure("Vehicle can not be changed in state 'Canceled'."));
     }
 
     public (IOrderState state, Result result) RemoveVehicle(Func<Result> removeVehicle)

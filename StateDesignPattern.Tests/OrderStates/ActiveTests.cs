@@ -155,7 +155,6 @@ namespace StateDesignPattern.Tests.OrderStates
         _activeState = new Active();
       }
 
-
       [Fact]
       public void returns_the_state_itself_and_the_expected_result()
       {
@@ -175,7 +174,6 @@ namespace StateDesignPattern.Tests.OrderStates
         _activeState = new Active();
       }
 
-
       [Fact]
       public void returns_the_state_itself_and_the_expected_result()
       {
@@ -193,7 +191,6 @@ namespace StateDesignPattern.Tests.OrderStates
       {
         _activeState = new Active();
       }
-
 
       [Fact]
       public void returns_the_state_itself_and_the_expected_result()
