@@ -38,7 +38,7 @@ namespace StateDesignPattern.Tests.OrderStates
       {
         var (state, result) = _newState.Activate(
           () => false, 
-          () => Result.Success());
+          null!);
       
         state.Type.Should().Be(OrderStateType.New);
         result.IsFailure.Should().BeTrue();
@@ -69,8 +69,8 @@ namespace StateDesignPattern.Tests.OrderStates
       public void returns_the_state_itself_and_failure_result()
       {
         var (state, result) = _newState.Complete(
-          () => true,
-          () => Result.Success(new Invoice()));
+          null!,
+          null!);
       
         state.Type.Should().Be(OrderStateType.New);
         result.IsFailure.Should().BeTrue();
@@ -91,7 +91,7 @@ namespace StateDesignPattern.Tests.OrderStates
       {
         var (state, result) = _newState.Cancel(
           () => false,
-          () => Result.Success());
+          null!);
       
         state.Type.Should().Be(OrderStateType.New);
         result.IsFailure.Should().BeTrue();
