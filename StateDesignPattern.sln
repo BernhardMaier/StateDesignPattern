@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateDesignPattern.Logic", "StateDesignPattern.Logic\StateDesignPattern.Logic.csproj", "{8E3AB8AE-DB1D-4020-9BE6-614A7B5A1FF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateDesignPattern.Tests", "StateDesignPattern.Tests\StateDesignPattern.Tests.csproj", "{99356E93-262A-48E1-AC9E-11DE7E281C03}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8E3AB8AE-DB1D-4020-9BE6-614A7B5A1FF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E3AB8AE-DB1D-4020-9BE6-614A7B5A1FF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E3AB8AE-DB1D-4020-9BE6-614A7B5A1FF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E3AB8AE-DB1D-4020-9BE6-614A7B5A1FF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99356E93-262A-48E1-AC9E-11DE7E281C03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99356E93-262A-48E1-AC9E-11DE7E281C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99356E93-262A-48E1-AC9E-11DE7E281C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99356E93-262A-48E1-AC9E-11DE7E281C03}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
