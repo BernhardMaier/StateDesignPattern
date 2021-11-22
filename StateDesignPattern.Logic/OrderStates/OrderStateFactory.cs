@@ -2,9 +2,9 @@
 
 namespace StateDesignPattern.Logic.OrderStates
 {
-  public static class OrderStateHelper
+  public static class OrderStateFactory
   {
-    public static IOrderState Instantiate(int orderStateTypeId)
+    public static IOrderState Create(int orderStateTypeId)
     {
       return orderStateTypeId switch
       {

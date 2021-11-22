@@ -12,7 +12,7 @@ namespace StateDesignPattern.Logic
     private IOrderState? _state;
     private IOrderState State
     {
-      get => _state ??= OrderStateHelper.Instantiate(StateType);
+      get => _state ??= OrderStateFactory.Create(StateType);
       set
       {
         _state = value;
