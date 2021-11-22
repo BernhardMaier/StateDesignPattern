@@ -36,21 +36,17 @@ namespace StateDesignPattern.Tests.OrderStates
       [Fact]
       public void returns_the_state_itself_and_failure_result_if_prerequisites_are_not_met()
       {
-        var (state, result) = _newState.Activate(
-          () => false,
-          null!);
+        var (state, result) = _newState.Activate(string.Empty, null!);
 
         state.Type.Should().Be(OrderStateType.New);
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Preconditions not met to change from 'New' to 'Active'.");
+        result.Error.Should().Be("Customer must be set to change from 'New' to 'Active'.");
       }
 
       [Fact]
       public void returns_the_active_state_and_success_result_if_prerequisites_are_met()
       {
-        var (state, result) = _newState.Activate(
-          () => true,
-          () => Result.Success());
+        var (state, result) = _newState.Activate("John Doe", () => Result.Success());
 
         state.Type.Should().Be(OrderStateType.Active);
         result.IsSuccess.Should().BeTrue();
@@ -69,9 +65,7 @@ namespace StateDesignPattern.Tests.OrderStates
       [Fact]
       public void returns_the_state_itself_and_failure_result()
       {
-        var (state, result) = _newState.Complete(
-          null!,
-          null!);
+        var (state, result) = _newState.Complete(string.Empty, 0, null!);
 
         state.Type.Should().Be(OrderStateType.New);
         result.IsFailure.Should().BeTrue();
@@ -89,23 +83,9 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result_if_prerequisites_are_not_met()
-      {
-        var (state, result) = _newState.Cancel(
-          () => false,
-          null!);
-
-        state.Type.Should().Be(OrderStateType.New);
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Preconditions not met to change from 'New' to 'Canceled'.");
-      }
-
-      [Fact]
       public void returns_the_cancele_state_and_success_result_if_prerequisites_are_met()
       {
-        var (state, result) = _newState.Cancel(
-          () => true,
-          () => Result.Success());
+        var (state, result) = _newState.Cancel(() => Result.Success());
 
         state.Type.Should().Be(OrderStateType.Canceled);
         result.IsSuccess.Should().BeTrue();

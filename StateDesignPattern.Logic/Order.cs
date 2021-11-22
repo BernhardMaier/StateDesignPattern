@@ -37,22 +37,18 @@ namespace StateDesignPattern.Logic
       return tuple.result;
     }
 
-    private bool CanBeSetActive() => !string.IsNullOrWhiteSpace(Customer);
-    private bool CanBeCompleted() => !string.IsNullOrWhiteSpace(Customer) && Items.Any();
-    private bool CanBeCanceled() => true;
-
-    public Result Activate() => SetStateAndForwardResult(State.Activate(CanBeSetActive, () =>
+    public Result Activate() => SetStateAndForwardResult(State.Activate(Customer, () =>
     {
       return Result.Success();
     }));
     
-    public Result<Invoice> Complete() => SetStateAndForwardResult(State.Complete(CanBeCompleted, () =>
+    public Result<Invoice> Complete() => SetStateAndForwardResult(State.Complete(Customer, Items.Count, () =>
     {
       var invoice = new Invoice();
       return Result.Success(invoice);
     }));
     
-    public Result Cancel() => SetStateAndForwardResult(State.Cancel(CanBeCanceled, () =>
+    public Result Cancel() => SetStateAndForwardResult(State.Cancel(() =>
     {
       return Result.Success();
     }));

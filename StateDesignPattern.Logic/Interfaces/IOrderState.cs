@@ -9,12 +9,9 @@ namespace StateDesignPattern.Logic.Interfaces
     string Name { get; }
     OrderStateType Type { get; }
 
-    (IOrderState state, Result result) Activate(Func<bool> preconditionsMet, Func<Result> transitionFunc);
-
-    (IOrderState state, Result<Invoice> result) Complete(Func<bool> preconditionsMet,
-      Func<Result<Invoice>> transitionFunc);
-
-    (IOrderState state, Result result) Cancel(Func<bool> preconditionsMet, Func<Result> transitionFunc);
+    (IOrderState state, Result result) Activate(string customer, Func<Result> transitionFunc);
+    (IOrderState state, Result<Invoice> result) Complete(string customer, int itemsCount, Func<Result<Invoice>> transitionFunc);
+    (IOrderState state, Result result) Cancel(Func<Result> transitionFunc);
 
     (IOrderState state, Result result) UpdateItems(Func<Result> updateItems);
     (IOrderState state, Result result) ChangeCustomer(Func<Result> changeCustomer);

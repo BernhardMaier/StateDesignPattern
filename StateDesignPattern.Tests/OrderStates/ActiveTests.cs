@@ -59,20 +59,19 @@ namespace StateDesignPattern.Tests.OrderStates
       [Fact]
       public void returns_the_state_itself_and_failure_result_if_prerequisites_are_not_met()
       {
-        var (state, result) = _activeState.Complete(
-          () => false,
-          null!);
+        var (state, result) = _activeState.Complete( string.Empty, 0, null!);
 
         state.Type.Should().Be(OrderStateType.Active);
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Preconditions not met to change from 'Active' to 'Completed'.");
+        result.Error.Should().Be(
+          "Customer must be set and at least one item must be present to change from 'Active' to 'Completed'.");
       }
 
       [Fact]
       public void returns_the_completed_state_and_expected_success_result_if_prerequisites_are_met()
       {
         var (state, result) = _activeState.Complete(
-          () => true,
+          "John Doe", 1,
           () => Result.Success(new Invoice()));
 
         state.Type.Should().Be(OrderStateType.Completed);
@@ -91,23 +90,9 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result_if_prerequisites_are_not_met()
-      {
-        var (state, result) = _activeState.Cancel(
-          () => false,
-          null!);
-
-        state.Type.Should().Be(OrderStateType.Active);
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Preconditions not met to change from 'Active' to 'Canceled'.");
-      }
-
-      [Fact]
       public void returns_the_canceled_state_and_success_result_if_prerequisites_are_met()
       {
-        var (state, result) = _activeState.Cancel(
-          () => true,
-          () => Result.Success());
+        var (state, result) = _activeState.Cancel(() => Result.Success());
 
         state.Type.Should().Be(OrderStateType.Canceled);
         result.IsSuccess.Should().BeTrue();

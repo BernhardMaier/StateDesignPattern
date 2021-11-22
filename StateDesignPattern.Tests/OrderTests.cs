@@ -41,7 +41,7 @@ namespace StateDesignPattern.Tests
         var result = _order.Activate();
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Preconditions not met to change from 'New' to 'Active'.");
+        result.Error.Should().Be("Customer must be set to change from 'New' to 'Active'.");
       }
 
       [Fact]
@@ -173,7 +173,8 @@ namespace StateDesignPattern.Tests
         var result = _order.Complete();
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Preconditions not met to change from 'Active' to 'Completed'.");
+        result.Error.Should().Be(
+          "Customer must be set and at least one item must be present to change from 'Active' to 'Completed'.");
       }
 
       [Fact]

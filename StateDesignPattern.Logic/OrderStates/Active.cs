@@ -9,24 +9,23 @@ namespace StateDesignPattern.Logic.OrderStates
     public string Name => nameof(Active);
     public OrderStateType Type => OrderStateType.Active;
 
-    public (IOrderState state, Result result) Activate(Func<bool> preconditionsMet, Func<Result> transitionFunc)
+    public (IOrderState state, Result result) Activate(string customer, Func<Result> transitionFunc)
     {
       return (this, Result.Failure("State is already 'Active'."));
     }
 
     public (IOrderState state, Result<Invoice> result) Complete(
-      Func<bool> preconditionsMet, Func<Result<Invoice>> transitionFunc)
+      string customer, int itemCount, Func<Result<Invoice>> transitionFunc)
     {
-      return preconditionsMet()
+      return !string.IsNullOrWhiteSpace(customer) && itemCount > 0
         ? (new Completed(), transitionFunc())
-        : (this, Result.Failure<Invoice>("Preconditions not met to change from 'Active' to 'Completed'."));
+        : (this, Result.Failure<Invoice>(
+          "Customer must be set and at least one item must be present to change from 'Active' to 'Completed'."));
     }
 
-    public (IOrderState state, Result result) Cancel(Func<bool> preconditionsMet, Func<Result> transitionFunc)
+    public (IOrderState state, Result result) Cancel(Func<Result> transitionFunc)
     {
-      return preconditionsMet()
-        ? (new Canceled(), transitionFunc())
-        : (this, Result.Failure("Preconditions not met to change from 'Active' to 'Canceled'."));
+      return (new Canceled(), transitionFunc());
     }
 
     public (IOrderState state, Result result) UpdateItems(Func<Result> updateItems)
