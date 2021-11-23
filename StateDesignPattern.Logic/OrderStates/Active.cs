@@ -14,7 +14,7 @@ namespace StateDesignPattern.Logic.OrderStates
     public Result<(IOrderState State, IInvoice Invoice)> Complete(
       string customer, int itemCount, Func<Result<Invoice>> createInvoice)
     {
-      if (string.IsNullOrWhiteSpace(customer) && itemCount > 0)
+      if (string.IsNullOrWhiteSpace(customer) || itemCount <= 0)
         return Result.Failure<(IOrderState, IInvoice)>(
           "Customer must be set and at least one item must be present to change from 'Active' to 'Completed'.");
       

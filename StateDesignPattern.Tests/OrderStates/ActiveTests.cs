@@ -35,13 +35,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result()
+      public void returns_expected_failure_result()
       {
-        var (state, result) = _activeState.Activate(
-          null!,
-          null!);
+        var result = _activeState.Activate("John Doe");
 
-        state.Type.Should().Be(OrderStateType.Active);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("State is already 'Active'.");
       }
@@ -57,26 +54,25 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result_if_prerequisites_are_not_met()
+      public void returns_the_expected_failure_result_if_prerequisites_are_not_met()
       {
-        var (state, result) = _activeState.Complete( string.Empty, 0, null!);
+        var result = _activeState.Complete(string.Empty, 0, null!);
 
-        state.Type.Should().Be(OrderStateType.Active);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(
           "Customer must be set and at least one item must be present to change from 'Active' to 'Completed'.");
       }
 
       [Fact]
-      public void returns_the_completed_state_and_expected_success_result_if_prerequisites_are_met()
+      public void returns_the_expected_success_result_if_prerequisites_are_met()
       {
-        var (state, result) = _activeState.Complete(
+        var result = _activeState.Complete(
           "John Doe", 1,
           () => Result.Success(new Invoice()));
 
-        state.Type.Should().Be(OrderStateType.Completed);
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().BeOfType<Invoice>();
+        result.Value.State.Type.Should().Be(OrderStateType.Completed);
+        result.Value.Invoice.Should().BeAssignableTo<IInvoice>();
       }
     }
 
@@ -90,12 +86,12 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_canceled_state_and_success_result_if_prerequisites_are_met()
+      public void returns_the_expected_result()
       {
-        var (state, result) = _activeState.Cancel(() => Result.Success());
+        var result = _activeState.Cancel();
 
-        state.Type.Should().Be(OrderStateType.Canceled);
         result.IsSuccess.Should().BeTrue();
+        result.Value.Type.Should().Be(OrderStateType.Canceled);
       }
     }
 
@@ -109,11 +105,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_the_expected_result()
+      public void returns_the_expected_result()
       {
-        var (state, result) = _activeState.UpdateItems(Result.Success);
+        var result = _activeState.UpdateItems(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.Active);
         result.IsSuccess.Should().BeTrue();
       }
     }
@@ -128,11 +123,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_the_expected_result()
+      public void returns_the_expected_result()
       {
-        var (state, result) = _activeState.ChangeCustomer(Result.Success);
+        var result = _activeState.ChangeCustomer(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.Active);
         result.IsSuccess.Should().BeTrue();
       }
     }
@@ -147,11 +141,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_the_expected_result()
+      public void returns_the_expected_result()
       {
-        var (state, result) = _activeState.RemoveCustomer(Result.Success);
+        var result = _activeState.RemoveCustomer(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.Active);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("Customer can not be removed in state 'Active'.");
       }
@@ -167,11 +160,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_the_expected_result()
+      public void returns_the_expected_result()
       {
-        var (state, result) = _activeState.ChangeVehicle(Result.Success);
+        var result = _activeState.ChangeVehicle(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.Active);
         result.IsSuccess.Should().BeTrue();
       }
     }
@@ -186,11 +178,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_the_expected_result()
+      public void returns_the_expected_result()
       {
-        var (state, result) = _activeState.RemoveVehicle(Result.Success);
+        var result = _activeState.RemoveVehicle(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.Active);
         result.IsSuccess.Should().BeTrue();
       }
     }

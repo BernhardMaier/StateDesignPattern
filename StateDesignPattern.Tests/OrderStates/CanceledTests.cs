@@ -34,13 +34,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result()
+      public void returns_the_expected_failure_result()
       {
-        var (state, result) = _canceledState.Activate(
-          null!,
-          null!);
+        var result = _canceledState.Activate("John Doe");
 
-        state.Type.Should().Be(OrderStateType.Canceled);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("State can not be changed to 'Active'.");
       }
@@ -56,11 +53,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result()
+      public void returns_the_expected_failure_result()
       {
-        var (state, result) = _canceledState.Complete(string.Empty, 0, null!);
+        var result = _canceledState.Complete(string.Empty, 0, null!);
 
-        state.Type.Should().Be(OrderStateType.Canceled);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("State can not be changed to 'Completed'.");
       }
@@ -76,11 +72,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result()
+      public void returns_the_expected_failure_result()
       {
-        var (state, result) = _canceledState.Cancel(null!);
+        var result = _canceledState.Cancel();
 
-        state.Type.Should().Be(OrderStateType.Canceled);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("State is already 'Canceled'.");
       }
@@ -96,11 +91,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result()
+      public void returns_the_expected_failure_result()
       {
-        var (state, result) = _canceledState.UpdateItems(Result.Success);
+        var result = _canceledState.UpdateItems(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.Canceled);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("Items can not be updated in state 'Canceled'.");
       }
@@ -116,11 +110,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result()
+      public void returns_the_expected_failure_result()
       {
-        var (state, result) = _canceledState.ChangeCustomer(Result.Success);
+        var result = _canceledState.ChangeCustomer(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.Canceled);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("Customer can not be changed in state 'Canceled'.");
       }
@@ -136,11 +129,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result()
+      public void returns_the_expected_failure_result()
       {
-        var (state, result) = _canceledState.RemoveCustomer(Result.Success);
+        var result = _canceledState.RemoveCustomer(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.Canceled);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("Customer can not be removed in state 'Canceled'.");
       }
@@ -156,11 +148,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result()
+      public void returns_the_expected_failure_result()
       {
-        var (state, result) = _canceledState.ChangeVehicle(Result.Success);
+        var result = _canceledState.ChangeVehicle(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.Canceled);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("Vehicle can not be changed in state 'Canceled'.");
       }
@@ -176,11 +167,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result()
+      public void returns_the_expected_failure_result()
       {
-        var (state, result) = _canceledState.RemoveVehicle(Result.Success);
+        var result = _canceledState.RemoveVehicle(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.Canceled);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("Vehicle can not be removed in state 'Canceled'.");
       }

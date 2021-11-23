@@ -34,22 +34,21 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result_if_prerequisites_are_not_met()
+      public void returns_the_expected_failure_result_if_prerequisites_are_not_met()
       {
-        var (state, result) = _newState.Activate(string.Empty, null!);
+        var result = _newState.Activate(string.Empty);
 
-        state.Type.Should().Be(OrderStateType.New);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("Customer must be set to change from 'New' to 'Active'.");
       }
 
       [Fact]
-      public void returns_the_active_state_and_success_result_if_prerequisites_are_met()
+      public void returns_the_expected_success_result_if_prerequisites_are_met()
       {
-        var (state, result) = _newState.Activate("John Doe", () => Result.Success());
+        var result = _newState.Activate("John Doe");
 
-        state.Type.Should().Be(OrderStateType.Active);
         result.IsSuccess.Should().BeTrue();
+        result.Value.Type.Should().Be(OrderStateType.Active);
       }
     }
 
@@ -63,11 +62,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result()
+      public void returns_the_expected_failure_result()
       {
-        var (state, result) = _newState.Complete(string.Empty, 0, null!);
+        var result = _newState.Complete(string.Empty, 0, null!);
 
-        state.Type.Should().Be(OrderStateType.New);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("State can not be changed to 'Complete'.");
       }
@@ -83,12 +81,12 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_cancele_state_and_success_result_if_prerequisites_are_met()
+      public void returns_the_expected_success_result_if_prerequisites_are_met()
       {
-        var (state, result) = _newState.Cancel(() => Result.Success());
+        var result = _newState.Cancel();
 
-        state.Type.Should().Be(OrderStateType.Canceled);
         result.IsSuccess.Should().BeTrue();
+        result.Value.Type.Should().Be(OrderStateType.Canceled);
       }
     }
 
@@ -102,11 +100,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_failure_result()
+      public void returns_the_expected_failure_result()
       {
-        var (state, result) = _newState.UpdateItems(Result.Success);
+        var result = _newState.UpdateItems(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.New);
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be("Items can not be updated in state 'New'.");
       }
@@ -122,11 +119,10 @@ namespace StateDesignPattern.Tests.OrderStates
       }
 
       [Fact]
-      public void returns_the_state_itself_and_the_expected_result()
+      public void returns_the_expected_result()
       {
-        var (state, result) = _newState.ChangeCustomer(Result.Success);
+        var result = _newState.ChangeCustomer(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.New);
         result.IsSuccess.Should().BeTrue();
       }
     }
@@ -142,11 +138,10 @@ namespace StateDesignPattern.Tests.OrderStates
 
 
       [Fact]
-      public void returns_the_state_itself_and_the_expected_result()
+      public void returns_the_expected_result()
       {
-        var (state, result) = _newState.RemoveCustomer(Result.Success);
+        var result = _newState.RemoveCustomer(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.New);
         result.IsSuccess.Should().BeTrue();
       }
     }
@@ -162,11 +157,10 @@ namespace StateDesignPattern.Tests.OrderStates
 
 
       [Fact]
-      public void returns_the_state_itself_and_the_expected_result()
+      public void returns_the_expected_result()
       {
-        var (state, result) = _newState.ChangeVehicle(Result.Success);
+        var result = _newState.ChangeVehicle(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.New);
         result.IsSuccess.Should().BeTrue();
       }
     }
@@ -182,11 +176,10 @@ namespace StateDesignPattern.Tests.OrderStates
 
 
       [Fact]
-      public void returns_the_state_itself_and_the_expected_result()
+      public void returns_the_expected_result()
       {
-        var (state, result) = _newState.RemoveVehicle(Result.Success);
+        var result = _newState.RemoveVehicle(Result.Success);
 
-        state.Type.Should().Be(OrderStateType.New);
         result.IsSuccess.Should().BeTrue();
       }
     }
