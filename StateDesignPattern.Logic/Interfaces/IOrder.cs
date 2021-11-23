@@ -8,7 +8,7 @@ namespace StateDesignPattern.Logic.Interfaces
     string CurrentState { get; }
 
     Result Activate();
-    Result<Invoice> Complete();
+    Result<IInvoice> Complete();
     Result Cancel();
 
     Result UpdateItems(List<string> items);

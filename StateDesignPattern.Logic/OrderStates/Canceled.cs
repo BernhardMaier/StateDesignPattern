@@ -9,45 +9,18 @@ namespace StateDesignPattern.Logic.OrderStates
     public string Name => nameof(Canceled);
     public OrderStateType Type => OrderStateType.Canceled;
 
-    public (IOrderState state, Result result) Activate(string customer, Func<Result> transitionFunc)
-    {
-      return (this, Result.Failure("State can not be changed to 'Active'."));
-    }
+    public Result<IOrderState> Activate(string customer) => Result.Failure<IOrderState>("State can not be changed to 'Active'.");
 
-    public (IOrderState state, Result<Invoice> result) Complete(
-      string customer, int itemCount, Func<Result<Invoice>> transitionFunc)
-    {
-      return (this, Result.Failure<Invoice>("State can not be changed to 'Completed'."));
-    }
+    public Result<(IOrderState State, IInvoice Invoice)> Complete(
+      string customer, int itemCount, Func<Result<Invoice>> createInvoice) =>
+      Result.Failure<(IOrderState, IInvoice)>("State can not be changed to 'Completed'.");
 
-    public (IOrderState state, Result result) Cancel(Func<Result> transitionFunc)
-    {
-      return (this, Result.Failure("State is already 'Canceled'."));
-    }
+    public Result<IOrderState> Cancel() => Result.Failure<IOrderState>("State is already 'Canceled'.");
 
-    public (IOrderState state, Result result) UpdateItems(Func<Result> updateItems)
-    {
-      return (this, Result.Failure("Items can not be updated in state 'Canceled'."));
-    }
-
-    public (IOrderState state, Result result) ChangeCustomer(Func<Result> changeCustomer)
-    {
-      return (this, Result.Failure("Customer can not be changed in state 'Canceled'."));
-    }
-
-    public (IOrderState state, Result result) RemoveCustomer(Func<Result> removeCustomer)
-    {
-      return (this, Result.Failure("Customer can not be removed in state 'Canceled'."));
-    }
-
-    public (IOrderState state, Result result) ChangeVehicle(Func<Result> changeVehicle)
-    {
-      return (this, Result.Failure("Vehicle can not be changed in state 'Canceled'."));
-    }
-
-    public (IOrderState state, Result result) RemoveVehicle(Func<Result> removeVehicle)
-    {
-      return (this, Result.Failure("Vehicle can not be removed in state 'Canceled'."));
-    }
+    public Result UpdateItems(Func<Result> updateItems) => Result.Failure("Items can not be updated in state 'Canceled'.");
+    public Result ChangeCustomer(Func<Result> changeCustomer) => Result.Failure("Customer can not be changed in state 'Canceled'.");
+    public Result RemoveCustomer(Func<Result> removeCustomer) => Result.Failure("Customer can not be removed in state 'Canceled'.");
+    public Result ChangeVehicle(Func<Result> changeVehicle) => Result.Failure("Vehicle can not be changed in state 'Canceled'.");
+    public Result RemoveVehicle(Func<Result> removeVehicle) => Result.Failure("Vehicle can not be removed in state 'Canceled'.");
   }
 }

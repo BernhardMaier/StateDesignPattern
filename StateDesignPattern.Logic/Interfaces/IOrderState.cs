@@ -9,14 +9,15 @@ namespace StateDesignPattern.Logic.Interfaces
     string Name { get; }
     OrderStateType Type { get; }
 
-    (IOrderState state, Result result) Activate(string customer, Func<Result> transitionFunc);
-    (IOrderState state, Result<Invoice> result) Complete(string customer, int itemsCount, Func<Result<Invoice>> transitionFunc);
-    (IOrderState state, Result result) Cancel(Func<Result> transitionFunc);
+    Result<IOrderState> Activate(string customer);
+    Result<(IOrderState State, IInvoice Invoice)> Complete(string customer, int itemsCount,
+      Func<Result<Invoice>> createInvoice);
+    Result<IOrderState> Cancel();
 
-    (IOrderState state, Result result) UpdateItems(Func<Result> updateItems);
-    (IOrderState state, Result result) ChangeCustomer(Func<Result> changeCustomer);
-    (IOrderState state, Result result) RemoveCustomer(Func<Result> removeCustomer);
-    (IOrderState state, Result result) ChangeVehicle(Func<Result> changeVehicle);
-    (IOrderState state, Result result) RemoveVehicle(Func<Result> removeVehicle);
+    Result UpdateItems(Func<Result> updateItems);
+    Result ChangeCustomer(Func<Result> changeCustomer);
+    Result RemoveCustomer(Func<Result> removeCustomer);
+    Result ChangeVehicle(Func<Result> changeVehicle);
+    Result RemoveVehicle(Func<Result> removeVehicle);
   }
 }

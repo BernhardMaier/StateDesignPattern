@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using CSharpFunctionalExtensions;
 using StateDesignPattern.Logic.Interfaces;
 using StateDesignPattern.Logic.OrderStates;
@@ -25,69 +24,89 @@ namespace StateDesignPattern.Logic
     public string Vehicle { get; private set; } = string.Empty;
     public List<string> Items { get; } = new();
 
-    private Result SetStateAndForwardResult((IOrderState state, Result result) tuple)
+    private void SetState(IOrderState newState) => State = newState;
+
+    public Result Activate()
     {
-      State = tuple.state;
-      return tuple.result;
+      return State
+        .Activate(Customer)
+        .OnSuccessTry(SetState);
+    }
+    
+    public Result<IInvoice> Complete()
+    {
+      return State
+        .Complete(Customer, Items.Count, () =>
+        {
+          var invoice = new Invoice();
+          return Result.Success(invoice);
+        })
+        .Tap(tuple => SetState(tuple.State))
+        .Map(tuple => tuple.Invoice);
     }
 
-    private Result<T> SetStateAndForwardResult<T>((IOrderState state, Result<T> result) tuple)
+    public Result Cancel()
     {
-      State = tuple.state;
-      return tuple.result;
+      return State
+        .Cancel()
+        .OnSuccessTry(SetState);
     }
 
-    public Result Activate() => SetStateAndForwardResult(State.Activate(Customer, () =>
+    public Result UpdateItems(List<string> items)
     {
-      return Result.Success();
-    }));
+      return State
+        .UpdateItems(() =>
+        {
+          Items.Clear();
+          Items.AddRange(items);
+          return Result.Success();
+        });
+    }
     
-    public Result<Invoice> Complete() => SetStateAndForwardResult(State.Complete(Customer, Items.Count, () =>
+    public Result ChangeCustomer(string customer)
     {
-      var invoice = new Invoice();
-      return Result.Success(invoice);
-    }));
-    
-    public Result Cancel() => SetStateAndForwardResult(State.Cancel(() =>
+      return State
+        .ChangeCustomer(() =>
+        {
+          if (string.IsNullOrWhiteSpace(customer))
+            return Result.Failure("Given customer is not valid.");
+
+          Customer = customer;
+          return Result.Success();
+        });
+    }
+
+    public Result RemoveCustomer()
     {
-      return Result.Success();
-    }));
+      return State
+        .RemoveCustomer(() =>
+        {
+          Customer = string.Empty;
+          return Result.Success();
+        });
+    }
 
-    public Result UpdateItems(List<string> items) => SetStateAndForwardResult(State.UpdateItems(() =>
+    public Result ChangeVehicle(string vehicle)
     {
-      Items.Clear();
-      Items.AddRange(items);
-      return Result.Success();
-    }));
+      return State
+        .ChangeVehicle(() =>
+        {
+          if (string.IsNullOrWhiteSpace(vehicle))
+            return Result.Failure("Given vehicle is not valid.");
 
-    public Result ChangeCustomer(string customer) => SetStateAndForwardResult(State.ChangeCustomer(() =>
+          Vehicle = vehicle;
+          return Result.Success();
+        });
+    }
+
+    public Result RemoveVehicle()
     {
-      if (string.IsNullOrWhiteSpace(customer))
-        return Result.Failure("Given customer is not valid.");
-
-      Customer = customer;
-      return Result.Success();
-    }));
-
-    public Result RemoveCustomer() => SetStateAndForwardResult(State.RemoveCustomer(() =>
-    {
-      Customer = string.Empty;
-      return Result.Success();
-    }));
-
-    public Result ChangeVehicle(string vehicle) => SetStateAndForwardResult(State.ChangeVehicle(() =>
-    {
-      if (string.IsNullOrWhiteSpace(vehicle))
-        return Result.Failure("Given vehicle is not valid.");
-
-      Vehicle = vehicle;
-      return Result.Success();
-    }));
-
-    public Result RemoveVehicle() => SetStateAndForwardResult(State.RemoveVehicle(() =>
-    {
-      Vehicle = string.Empty;
-      return Result.Success();
-    }));
+      return State
+        .RemoveVehicle(() =>
+        {
+          Vehicle = string.Empty;
+          return Result.Success();
+        });
+    }
   }
 }

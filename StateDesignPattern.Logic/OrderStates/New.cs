@@ -9,51 +9,23 @@ namespace StateDesignPattern.Logic.OrderStates
     public string Name => nameof(New);
     public OrderStateType Type => OrderStateType.New;
 
-    public (IOrderState state, Result result) Activate(string customer, Func<Result> transitionFunc)
+    public Result<IOrderState> Activate(string customer)
     {
       return !string.IsNullOrWhiteSpace(customer)
-        ? (new Active(), transitionFunc())
-        : (this, Result.Failure("Customer must be set to change from 'New' to 'Active'."));
+        ? new Active()
+        : Result.Failure<IOrderState>("Customer must be set to change from 'New' to 'Active'.");
     }
 
-    public (IOrderState state, Result<Invoice> result) Complete(
-      string customer, int itemsCount, Func<Result<Invoice>> transitionFunc)
-    {
-      return (this, Result.Failure<Invoice>("State can not be changed to 'Complete'."));
-    }
+    public Result<(IOrderState State, IInvoice Invoice)> Complete(
+      string customer, int itemsCount, Func<Result<Invoice>> createInvoice) =>
+      Result.Failure<(IOrderState, IInvoice)>("State can not be changed to 'Complete'.");
 
-    public (IOrderState state, Result result) Cancel(Func<Result> transitionFunc)
-    {
-      return (new Canceled(), transitionFunc());
-    }
+    public Result<IOrderState> Cancel() => new Canceled();
 
-    public (IOrderState state, Result result) UpdateItems(Func<Result> updateItems)
-    {
-      return (this, Result.Failure("Items can not be updated in state 'New'."));
-    }
-
-    public (IOrderState state, Result result) ChangeCustomer(Func<Result> changeCustomer)
-    {
-      var result = changeCustomer();
-      return (this, result);
-    }
-
-    public (IOrderState state, Result result) RemoveCustomer(Func<Result> removeCustomer)
-    {
-      var result = removeCustomer();
-      return (this, result);
-    }
-
-    public (IOrderState state, Result result) ChangeVehicle(Func<Result> changeVehicle)
-    {
-      var result = changeVehicle();
-      return (this, result);
-    }
-
-    public (IOrderState state, Result result) RemoveVehicle(Func<Result> removeVehicle)
-    {
-      var result = removeVehicle();
-      return (this, result);
-    }
+    public Result UpdateItems(Func<Result> updateItems) => Result.Failure("Items can not be updated in state 'New'.");
+    public Result ChangeCustomer(Func<Result> changeCustomer) => changeCustomer();
+    public Result RemoveCustomer(Func<Result> removeCustomer) => removeCustomer();
+    public Result ChangeVehicle(Func<Result> changeVehicle) => changeVehicle();
+    public Result RemoveVehicle(Func<Result> removeVehicle) => removeVehicle();
   }
 }

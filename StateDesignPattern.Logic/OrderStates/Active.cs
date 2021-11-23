@@ -9,52 +9,27 @@ namespace StateDesignPattern.Logic.OrderStates
     public string Name => nameof(Active);
     public OrderStateType Type => OrderStateType.Active;
 
-    public (IOrderState state, Result result) Activate(string customer, Func<Result> transitionFunc)
+    public Result<IOrderState> Activate(string customer) => Result.Failure<IOrderState>("State is already 'Active'.");
+
+    public Result<(IOrderState State, IInvoice Invoice)> Complete(
+      string customer, int itemCount, Func<Result<Invoice>> createInvoice)
     {
-      return (this, Result.Failure("State is already 'Active'."));
+      if (string.IsNullOrWhiteSpace(customer) && itemCount > 0)
+        return Result.Failure<(IOrderState, IInvoice)>(
+          "Customer must be set and at least one item must be present to change from 'Active' to 'Completed'.");
+      
+      var createInvoiceResult = createInvoice();
+      return createInvoiceResult.IsSuccess
+        ? Result.Success<(IOrderState, IInvoice)>((new Completed(), createInvoiceResult.Value))
+        : createInvoiceResult.ConvertFailure<(IOrderState, IInvoice)>();
     }
 
-    public (IOrderState state, Result<Invoice> result) Complete(
-      string customer, int itemCount, Func<Result<Invoice>> transitionFunc)
-    {
-      return !string.IsNullOrWhiteSpace(customer) && itemCount > 0
-        ? (new Completed(), transitionFunc())
-        : (this, Result.Failure<Invoice>(
-          "Customer must be set and at least one item must be present to change from 'Active' to 'Completed'."));
-    }
+    public Result<IOrderState> Cancel() => new Canceled();
 
-    public (IOrderState state, Result result) Cancel(Func<Result> transitionFunc)
-    {
-      return (new Canceled(), transitionFunc());
-    }
-
-    public (IOrderState state, Result result) UpdateItems(Func<Result> updateItems)
-    {
-      var result = updateItems();
-      return (this, result);
-    }
-
-    public (IOrderState state, Result result) ChangeCustomer(Func<Result> changeCustomer)
-    {
-      var result = changeCustomer();
-      return (this, result);
-    }
-
-    public (IOrderState state, Result result) RemoveCustomer(Func<Result> removeCustomer)
-    {
-      return (this, Result.Failure("Customer can not be removed in state 'Active'."));
-    }
-
-    public (IOrderState state, Result result) ChangeVehicle(Func<Result> changeVehicle)
-    {
-      var result = changeVehicle();
-      return (this, result);
-    }
-
-    public (IOrderState state, Result result) RemoveVehicle(Func<Result> removeVehicle)
-    {
-      var result = removeVehicle();
-      return (this, result);
-    }
+    public Result UpdateItems(Func<Result> updateItems) => updateItems();
+    public Result ChangeCustomer(Func<Result> changeCustomer) => changeCustomer();
+    public Result RemoveCustomer(Func<Result> removeCustomer) => Result.Failure("Customer can not be removed in state 'Active'.");
+    public Result ChangeVehicle(Func<Result> changeVehicle) => changeVehicle();
+    public Result RemoveVehicle(Func<Result> removeVehicle) => removeVehicle();
   }
 }
