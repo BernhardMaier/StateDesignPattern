@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateDesignPattern.Logic", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateDesignPattern.Tests", "StateDesignPattern.Tests\StateDesignPattern.Tests.csproj", "{99356E93-262A-48E1-AC9E-11DE7E281C03}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateDesignPattern.API", "StateDesignPattern.API\StateDesignPattern.API.csproj", "{A4CA2027-2057-4156-BBBF-2E23DC7A90EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{99356E93-262A-48E1-AC9E-11DE7E281C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99356E93-262A-48E1-AC9E-11DE7E281C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99356E93-262A-48E1-AC9E-11DE7E281C03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4CA2027-2057-4156-BBBF-2E23DC7A90EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4CA2027-2057-4156-BBBF-2E23DC7A90EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4CA2027-2057-4156-BBBF-2E23DC7A90EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4CA2027-2057-4156-BBBF-2E23DC7A90EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
