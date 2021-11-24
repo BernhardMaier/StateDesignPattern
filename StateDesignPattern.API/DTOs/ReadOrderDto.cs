@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 
 namespace StateDesignPattern.API.DTOs
 {
-  public class OrderDto
+  public class ReadOrderDto
   {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string CurrentState { get; set; }
     public string Customer { get; set; }
     public string Vehicle { get; set; }

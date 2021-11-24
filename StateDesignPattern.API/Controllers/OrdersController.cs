@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StateDesignPattern.API.DTOs;
 using StateDesignPattern.Logic;
+using StateDesignPattern.Logic.OrderStates;
 
 namespace StateDesignPattern.API.Controllers
 {
@@ -18,39 +20,70 @@ namespace StateDesignPattern.API.Controllers
     }
 
     [HttpGet]
-    public IEnumerable<OrderDto> Get()
+    public IEnumerable<ReadOrderDto> Get()
     {
-      var orderDtos = new List<OrderDto>();
+      var dtos = new List<ReadOrderDto>();
       for (var i = 0; i < 10; i++)
       {
         var order = new Order();
         order.ChangeCustomer("John Doe");
         order.ChangeVehicle("Mercedes");
 
-        orderDtos.Add(new OrderDto()
+        dtos.Add(new ReadOrderDto()
         {
-          Id = i,
+          Id = order.Id,
           CurrentState = order.CurrentState,
           Customer = order.Customer,
           Vehicle = order.Vehicle,
           Items = order.Items
         });
       }
-      return orderDtos;
+      return dtos;
     }
 
+    [HttpPost]
+    public ReadOrderDto Get(CreateOrderDto input)
+    {
+      var newOrder = new Order();
+      newOrder.ChangeCustomer(input.Customer);
+      newOrder.ChangeVehicle(input.Vehicle);
+      
+      return new ReadOrderDto()
+      {
+        Id = Guid.NewGuid(),
+        CurrentState = newOrder.CurrentState,
+        Customer = newOrder.Customer,
+        Vehicle = newOrder.Vehicle,
+        Items = newOrder.Items
+      };
+    }
+    
     [HttpGet]
-    [Route("{id:int}")]
-    public OrderDto Get(int id)
+    [Route("{id:Guid}")]
+    public ReadOrderDto Get(Guid id)
     {
       var order = new Order();
-      return new OrderDto()
+      return new ReadOrderDto()
       {
         Id = id,
         CurrentState = order.CurrentState,
         Customer = order.Customer,
         Vehicle = order.Vehicle,
         Items = order.Items
+      };
+    }
+
+    [HttpPut]
+    [Route("{id:Guid}")]
+    public ReadOrderDto Get(Guid id, ReadOrderDto input)
+    {
+      return new ReadOrderDto()
+      {
+        Id = id,
+        CurrentState = input.CurrentState,
+        Customer = input.Customer,
+        Vehicle = input.Vehicle,
+        Items = input.Items
       };
     }
   }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 using StateDesignPattern.Logic.Interfaces;
 using StateDesignPattern.Logic.OrderStates;
@@ -19,6 +20,7 @@ namespace StateDesignPattern.Logic
       }
     }
 
+    public Guid Id { get; private set; } = Guid.NewGuid();
     public string CurrentState => State.Name;
     public string Customer { get; private set; } = string.Empty;
     public string Vehicle { get; private set; } = string.Empty;
