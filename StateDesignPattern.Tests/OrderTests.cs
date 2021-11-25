@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using StateDesignPattern.Logic;
 using StateDesignPattern.Logic.OrderStates;
@@ -26,6 +27,7 @@ namespace StateDesignPattern.Tests
       order.CurrentState.Should().Be(nameof(New));
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class Order_in_state_new
     {
       private readonly Order _order;
@@ -146,6 +148,7 @@ namespace StateDesignPattern.Tests
       }
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class Order_in_state_active
     {
       private const string InitialCustomer = "John Doe";

@@ -69,7 +69,7 @@ namespace StateDesignPattern.Logic
           return Result.Success();
         });
     }
-    
+
     public Result ChangeCustomer(string customer)
     {
       return State
