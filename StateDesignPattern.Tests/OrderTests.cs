@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
@@ -14,6 +15,7 @@ namespace StateDesignPattern.Tests
     {
       var order = new Order();
 
+      order.Id.Should().NotBeEmpty();
       order.Customer.Should().BeEmpty();
       order.Vehicle.Should().BeEmpty();
       order.Items.Should().HaveCount(0);
