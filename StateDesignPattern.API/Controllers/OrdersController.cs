@@ -22,7 +22,7 @@ namespace StateDesignPattern.API.Controllers
     }
 
     [HttpGet]
-    public IEnumerable<ReadOrderDto> Get()
+    public IEnumerable<ReadOrderDto> GetOrders()
     {
       var dtoList = new List<ReadOrderDto>();
       
@@ -33,7 +33,7 @@ namespace StateDesignPattern.API.Controllers
     }
 
     [HttpPost]
-    public ReadOrderDto Get(CreateOrderDto input)
+    public ReadOrderDto CreateOrder(CreateOrderDto input)
     {
       var newOrder = new Order();
       newOrder.ChangeCustomer(input.Customer);
@@ -46,7 +46,7 @@ namespace StateDesignPattern.API.Controllers
     
     [HttpGet]
     [Route("{id:Guid}")]
-    public ReadOrderDto Get(Guid id)
+    public ReadOrderDto GetOrder(Guid id)
     {
       var order = GetOrderById(id);
 
