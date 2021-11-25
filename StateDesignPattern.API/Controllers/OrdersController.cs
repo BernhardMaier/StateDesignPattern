@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StateDesignPattern.API.DTOs;
+using StateDesignPattern.API.Utils;
 using StateDesignPattern.Logic;
 
 namespace StateDesignPattern.API.Controllers
@@ -19,10 +20,12 @@ namespace StateDesignPattern.API.Controllers
     {
       _logger = logger;
       _orders = new List<Order>();
+      
+      _logger.Log(LogLevel.Information, "OrdersController initialized");
     }
 
     [HttpGet]
-    public IEnumerable<ReadOrderDto> GetOrders()
+    public ActionResult<IEnumerable<ReadOrderDto>> GetOrders()
     {
       var dtoList = new List<ReadOrderDto>();
       
@@ -33,7 +36,7 @@ namespace StateDesignPattern.API.Controllers
     }
 
     [HttpPost]
-    public ReadOrderDto CreateOrder(CreateOrderDto input)
+    public ActionResult<ReadOrderDto> CreateOrder(CreateOrderDto input)
     {
       var newOrder = new Order();
       newOrder.ChangeCustomer(input.Customer);
@@ -41,87 +44,80 @@ namespace StateDesignPattern.API.Controllers
       
       _orders.Add(newOrder);
       
-      return MapToReadOrderDto(newOrder);
+      return new CreatedResult(newOrder.Id.ToString(), MapToReadOrderDto(newOrder));
     }
     
     [HttpGet]
     [Route("{id:Guid}")]
-    public ReadOrderDto GetOrder(Guid id)
+    public ActionResult<ReadOrderDto> GetOrder(Guid id)
     {
       var order = GetOrderById(id);
-
-      if (order is null)
-        return null;
+      if (order is null) return NotFound();
       
       return MapToReadOrderDto(order);
     }
 
     [HttpPut]
     [Route("{id:Guid}/customer")]
-    public ReadOrderDto ChangeCustomer(Guid id, ChangeCustomerDto input)
+    public ActionResult<ReadOrderDto> ChangeCustomer(Guid id, ChangeCustomerDto input)
     {
       var order = GetOrderById(id);
+      if (order is null) return NotFound();
 
-      if (order is null)
-        return null;
-
-      order.ChangeCustomer(input.Customer);
+      var result = order.ChangeCustomer(input.Customer);
+      if (result.IsFailure) return result.Envelope();
       
       return MapToReadOrderDto(order);
     }
 
     [HttpDelete]
     [Route("{id:Guid}/customer")]
-    public ReadOrderDto RemoveCustomer(Guid id)
+    public ActionResult<ReadOrderDto> RemoveCustomer(Guid id)
     {
       var order = GetOrderById(id);
+      if (order is null) return NotFound();
 
-      if (order is null)
-        return null;
-
-      order.RemoveCustomer();
+      var result = order.RemoveCustomer();
+      if (result.IsFailure) return result.Envelope();
       
       return MapToReadOrderDto(order);
     }
 
     [HttpPut]
     [Route("{id:Guid}/vehicle")]
-    public ReadOrderDto ChangeVehicle(Guid id, ChangeVehicleDto input)
+    public ActionResult<ReadOrderDto> ChangeVehicle(Guid id, ChangeVehicleDto input)
     {
       var order = GetOrderById(id);
+      if (order is null) return NotFound();
 
-      if (order is null)
-        return null;
-
-      order.ChangeVehicle(input.Vehicle);
+      var result = order.ChangeVehicle(input.Vehicle);
+      if (result.IsFailure) return result.Envelope();
       
       return MapToReadOrderDto(order);
     }
 
     [HttpDelete]
     [Route("{id:Guid}/vehicle")]
-    public ReadOrderDto RemoveVehicle(Guid id)
+    public ActionResult<ReadOrderDto> RemoveVehicle(Guid id)
     {
       var order = GetOrderById(id);
+      if (order is null) return NotFound();
 
-      if (order is null)
-        return null;
-
-      order.RemoveVehicle();
+      var result = order.RemoveVehicle();
+      if (result.IsFailure) return result.Envelope();
       
       return MapToReadOrderDto(order);
     }
 
     [HttpPut]
     [Route("{id:Guid}/items")]
-    public ReadOrderDto Get(Guid id, ChangeItemsDto input)
+    public ActionResult<ReadOrderDto> Get(Guid id, ChangeItemsDto input)
     {
       var order = GetOrderById(id);
+      if (order is null) return NotFound();
 
-      if (order is null)
-        return null;
-
-      order.UpdateItems(input.Items);
+      var result = order.UpdateItems(input.Items);
+      if (result.IsFailure) return result.Envelope();
       
       return MapToReadOrderDto(order);
     }
