@@ -24,21 +24,12 @@ namespace StateDesignPattern.API.Controllers
     [HttpGet]
     public IEnumerable<ReadOrderDto> Get()
     {
-      var dtos = new List<ReadOrderDto>();
+      var dtoList = new List<ReadOrderDto>();
       
       foreach (var order in _orders)
-      {
-        dtos.Add(new ReadOrderDto()
-        {
-          Id = order.Id,
-          CurrentState = order.CurrentState,
-          Customer = order.Customer,
-          Vehicle = order.Vehicle,
-          Items = order.Items
-        });
-      }
+        dtoList.Add(MapToReadOrderDto(order));
       
-      return dtos;
+      return dtoList;
     }
 
     [HttpPost]
@@ -50,49 +41,96 @@ namespace StateDesignPattern.API.Controllers
       
       _orders.Add(newOrder);
       
-      return new ReadOrderDto()
-      {
-        Id = Guid.NewGuid(),
-        CurrentState = newOrder.CurrentState,
-        Customer = newOrder.Customer,
-        Vehicle = newOrder.Vehicle,
-        Items = newOrder.Items
-      };
+      return MapToReadOrderDto(newOrder);
     }
     
     [HttpGet]
     [Route("{id:Guid}")]
     public ReadOrderDto Get(Guid id)
     {
-      var order = _orders.FirstOrDefault(o => o.Id == id);
+      var order = GetOrderById(id);
 
       if (order is null)
         return null;
       
-      return new ReadOrderDto()
-      {
-        Id = id,
-        CurrentState = order.CurrentState,
-        Customer = order.Customer,
-        Vehicle = order.Vehicle,
-        Items = order.Items
-      };
+      return MapToReadOrderDto(order);
     }
 
     [HttpPut]
-    [Route("{id:Guid}")]
-    public ReadOrderDto Get(Guid id, UpdateOrderDto input)
+    [Route("{id:Guid}/customer")]
+    public ReadOrderDto ChangeCustomer(Guid id, ChangeCustomerDto input)
     {
-      var order = _orders.FirstOrDefault(o => o.Id == id);
+      var order = GetOrderById(id);
 
       if (order is null)
         return null;
 
       order.ChangeCustomer(input.Customer);
+      
+      return MapToReadOrderDto(order);
+    }
+
+    [HttpDelete]
+    [Route("{id:Guid}/customer")]
+    public ReadOrderDto RemoveCustomer(Guid id)
+    {
+      var order = GetOrderById(id);
+
+      if (order is null)
+        return null;
+
+      order.RemoveCustomer();
+      
+      return MapToReadOrderDto(order);
+    }
+
+    [HttpPut]
+    [Route("{id:Guid}/vehicle")]
+    public ReadOrderDto ChangeVehicle(Guid id, ChangeVehicleDto input)
+    {
+      var order = GetOrderById(id);
+
+      if (order is null)
+        return null;
+
       order.ChangeVehicle(input.Vehicle);
+      
+      return MapToReadOrderDto(order);
+    }
+
+    [HttpDelete]
+    [Route("{id:Guid}/vehicle")]
+    public ReadOrderDto RemoveVehicle(Guid id)
+    {
+      var order = GetOrderById(id);
+
+      if (order is null)
+        return null;
+
+      order.RemoveVehicle();
+      
+      return MapToReadOrderDto(order);
+    }
+
+    [HttpPut]
+    [Route("{id:Guid}/items")]
+    public ReadOrderDto Get(Guid id, ChangeItemsDto input)
+    {
+      var order = GetOrderById(id);
+
+      if (order is null)
+        return null;
+
       order.UpdateItems(input.Items);
       
-      return new ReadOrderDto()
+      return MapToReadOrderDto(order);
+    }
+
+    private Order? GetOrderById(Guid id) => _orders.FirstOrDefault(o => o.Id == id);
+
+    private static ReadOrderDto MapToReadOrderDto(Order order)
+    {
+      return new ReadOrderDto
       {
         Id = order.Id,
         CurrentState = order.CurrentState,
