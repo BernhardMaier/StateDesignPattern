@@ -8,6 +8,11 @@ namespace StateDesignPattern.Logic
 {
   public class Order : IOrder
   {
+    public Order()
+    {
+      Id = Guid.NewGuid();
+    }
+    
     private int StateType { get; set; }
     private IOrderState? _state;
     private IOrderState State
@@ -20,7 +25,7 @@ namespace StateDesignPattern.Logic
       }
     }
 
-    public Guid Id { get; private set; } = Guid.NewGuid();
+    public Guid Id { get; private set; }
     public string CurrentState => State.Name;
     public string Customer { get; private set; } = string.Empty;
     public string Vehicle { get; private set; } = string.Empty;
