@@ -29,7 +29,7 @@ namespace StateDesignPattern.API.Controllers
     [HttpGet]
     public ActionResult<IEnumerable<ReadOrderDto>> GetOrders()
     {
-      return Orders.Select(order => MapToReadOrderDto(order).Value).ToList();
+      return Orders.Select(order => Map(order, ToReadOrderDto).Value).ToList();
     }
 
     [HttpPost]
@@ -40,8 +40,10 @@ namespace StateDesignPattern.API.Controllers
       newOrder.ChangeVehicle(input.Vehicle);
       
       Orders.Add(newOrder);
-      
-      return new CreatedResult(newOrder.Id.ToString(), MapToReadOrderDto(newOrder).Value);
+
+      var dto = Map(newOrder, ToReadOrderDto).Value;
+
+      return new CreatedResult(newOrder.Id.ToString(), dto);
     }
     
     [HttpGet]
@@ -49,7 +51,7 @@ namespace StateDesignPattern.API.Controllers
     public ActionResult<ReadOrderDto> GetOrder(Guid id)
     {
       var order = GetOrderById(id);
-      return MapToReadOrderDto(order).Envelope();
+      return Map(order, ToReadOrderDto).Envelope();
     }
 
     [HttpPut]
@@ -99,17 +101,23 @@ namespace StateDesignPattern.API.Controllers
 
     private IOrder GetOrderById(Guid id) => Orders.FirstOrDefault(o => o.Id == id) ?? NoOrder.Instance(id);
 
-    private static Result<ReadOrderDto> MapToReadOrderDto(IOrder order)
+    private static Result<T> Map<T>(IOrder order, Func<IOrder, T> mapping)
     {
-      return order.CanBeMapped
-        .Map(() => new ReadOrderDto
-          {
-            Id = order.Id,
-            CurrentState = order.CurrentState,
-            Customer = order.Customer,
-            Vehicle = order.Vehicle,
-            Items = order.Items
-          });
+      return order
+        .CanBeMapped
+        .Map(() => mapping(order));
+    }
+    
+    private static ReadOrderDto ToReadOrderDto(IOrder order)
+    {
+      return new ReadOrderDto
+      {
+        Id = order.Id,
+        CurrentState = order.CurrentState,
+        Customer = order.Customer,
+        Vehicle = order.Vehicle,
+        Items = order.Items
+      };
     }
   }
 }
