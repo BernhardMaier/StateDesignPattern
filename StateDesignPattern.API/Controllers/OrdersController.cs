@@ -56,59 +56,60 @@ namespace StateDesignPattern.API.Controllers
     [Route("{id:Guid}/customer")]
     public ActionResult ChangeCustomer(Guid id, ChangeCustomerDto input)
     {
-      var order = GetOrderById(id);
-      var result = order.ChangeCustomer(input.Customer);
-      return result.Envelope();
+      return GetOrderById(id)
+        .ChangeCustomer(input.Customer)
+        .Envelope();
     }
 
     [HttpDelete]
     [Route("{id:Guid}/customer")]
     public ActionResult RemoveCustomer(Guid id)
     {
-      var order = GetOrderById(id);
-      var result = order.RemoveCustomer();
-      return result.Envelope();
+      return GetOrderById(id)
+        .RemoveCustomer()
+        .Envelope();
     }
 
     [HttpPut]
     [Route("{id:Guid}/vehicle")]
     public ActionResult ChangeVehicle(Guid id, ChangeVehicleDto input)
     {
-      var order = GetOrderById(id);
-      var result = order.ChangeVehicle(input.Vehicle);
-      return result.Envelope();
+      return GetOrderById(id)
+        .ChangeVehicle(input.Vehicle)
+        .Envelope();
     }
 
     [HttpDelete]
     [Route("{id:Guid}/vehicle")]
     public ActionResult RemoveVehicle(Guid id)
     {
-      var order = GetOrderById(id);
-      var result = order.RemoveVehicle();
-      return result.Envelope();
+      return GetOrderById(id)
+        .RemoveVehicle()
+        .Envelope();
     }
 
     [HttpPut]
     [Route("{id:Guid}/items")]
     public ActionResult Get(Guid id, ChangeItemsDto input)
     {
-      var order = GetOrderById(id);
-      var result = order.UpdateItems(input.Items);
-      return result.Envelope();
+      return GetOrderById(id)
+        .UpdateItems(input.Items)
+        .Envelope();
     }
 
     private IOrder GetOrderById(Guid id) => Orders.FirstOrDefault(o => o.Id == id) ?? NoOrder.Instance(id);
 
     private static Result<ReadOrderDto> MapToReadOrderDto(IOrder order)
     {
-      return order.CanBeMapped.Map(() => new ReadOrderDto
-      {
-        Id = order.Id,
-        CurrentState = order.CurrentState,
-        Customer = order.Customer,
-        Vehicle = order.Vehicle,
-        Items = order.Items
-      });
+      return order.CanBeMapped
+        .Map(() => new ReadOrderDto
+          {
+            Id = order.Id,
+            CurrentState = order.CurrentState,
+            Customer = order.Customer,
+            Vehicle = order.Vehicle,
+            Items = order.Items
+          });
     }
   }
 }
