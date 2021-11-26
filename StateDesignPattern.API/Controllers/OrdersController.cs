@@ -29,7 +29,7 @@ namespace StateDesignPattern.API.Controllers
     [HttpGet]
     public ActionResult<IEnumerable<ReadOrderDto>> GetOrders()
     {
-      return Orders.Select(order => Map(order, ToReadOrderDto).Value).ToList();
+      return Orders.Select(order => order.Map(ToReadOrderDto).Value).ToList();
     }
 
     [HttpPost]
@@ -41,7 +41,7 @@ namespace StateDesignPattern.API.Controllers
       
       Orders.Add(newOrder);
 
-      var dto = Map(newOrder, ToReadOrderDto).Value;
+      var dto = newOrder.Map(ToReadOrderDto).Value;
 
       return new CreatedResult(newOrder.Id.ToString(), dto);
     }
@@ -50,8 +50,9 @@ namespace StateDesignPattern.API.Controllers
     [Route("{id:Guid}")]
     public ActionResult<ReadOrderDto> GetOrder(Guid id)
     {
-      var order = GetOrderById(id);
-      return Map(order, ToReadOrderDto).Envelope();
+      return GetOrderById(id)
+        .Map(ToReadOrderDto)
+        .Envelope();
     }
 
     [HttpPut]
@@ -101,13 +102,6 @@ namespace StateDesignPattern.API.Controllers
 
     private IOrder GetOrderById(Guid id) => Orders.FirstOrDefault(o => o.Id == id) ?? NoOrder.Instance(id);
 
-    private static Result<T> Map<T>(IOrder order, Func<IOrder, T> mapping)
-    {
-      return order
-        .CanBeMapped
-        .Map(() => mapping(order));
-    }
-    
     private static ReadOrderDto ToReadOrderDto(IOrder order)
     {
       return new ReadOrderDto

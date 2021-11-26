@@ -14,8 +14,6 @@ namespace StateDesignPattern.Logic
 
     private string Error => $"Operation not possible: No order with id {Id}";
 
-    public Result CanBeMapped => Result.Failure($"Operation not possible: No order with id {Id}");
-
     public Guid Id { get; }
     public string CurrentState => string.Empty;
     public string Customer => string.Empty;
@@ -32,5 +30,7 @@ namespace StateDesignPattern.Logic
     public Result RemoveCustomer() => Result.Failure(Error);
     public Result ChangeVehicle(string vehicle) => Result.Failure(Error);
     public Result RemoveVehicle() => Result.Failure(Error);
+    
+    public Result<T> Map<T>(Func<IOrder, T> mapping) => Result.Failure<T>(Error);
   }
 }

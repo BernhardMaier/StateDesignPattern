@@ -6,8 +6,6 @@ namespace StateDesignPattern.Logic.Interfaces
 {
   public interface IOrder
   {
-    Result CanBeMapped { get; }
-
     Guid Id { get; }
     string CurrentState { get; }
     string Customer { get; }
@@ -23,5 +21,7 @@ namespace StateDesignPattern.Logic.Interfaces
     Result RemoveCustomer();
     Result ChangeVehicle(string vehicle);
     Result RemoveVehicle();
+
+    Result<T> Map<T>(Func<IOrder, T> mapping);
   }
 }

@@ -25,8 +25,6 @@ namespace StateDesignPattern.Logic
       }
     }
 
-    public Result CanBeMapped => Result.Success();
-
     public Guid Id { get; }
     public string CurrentState => State.Name;
     public string Customer { get; private set; } = string.Empty;
@@ -117,5 +115,7 @@ namespace StateDesignPattern.Logic
           return Result.Success();
         });
     }
+
+    public Result<T> Map<T>(Func<IOrder, T> mapping) => Result.Success(mapping(this));
   }
 }
