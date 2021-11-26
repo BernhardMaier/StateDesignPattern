@@ -59,67 +59,62 @@ namespace StateDesignPattern.API.Controllers
 
     [HttpPut]
     [Route("{id:Guid}/customer")]
-    public ActionResult<ReadOrderDto> ChangeCustomer(Guid id, ChangeCustomerDto input)
+    public ActionResult ChangeCustomer(Guid id, ChangeCustomerDto input)
     {
       var order = GetOrderById(id);
       if (order is null) return NotFound();
 
       var result = order.ChangeCustomer(input.Customer);
-      if (result.IsFailure) return result.Envelope();
       
-      return MapToReadOrderDto(order);
+      return result.Envelope();
     }
 
     [HttpDelete]
     [Route("{id:Guid}/customer")]
-    public ActionResult<ReadOrderDto> RemoveCustomer(Guid id)
+    public ActionResult RemoveCustomer(Guid id)
     {
       var order = GetOrderById(id);
       if (order is null) return NotFound();
 
       var result = order.RemoveCustomer();
-      if (result.IsFailure) return result.Envelope();
       
-      return MapToReadOrderDto(order);
+      return result.Envelope();
     }
 
     [HttpPut]
     [Route("{id:Guid}/vehicle")]
-    public ActionResult<ReadOrderDto> ChangeVehicle(Guid id, ChangeVehicleDto input)
+    public ActionResult ChangeVehicle(Guid id, ChangeVehicleDto input)
     {
       var order = GetOrderById(id);
       if (order is null) return NotFound();
 
       var result = order.ChangeVehicle(input.Vehicle);
-      if (result.IsFailure) return result.Envelope();
       
-      return MapToReadOrderDto(order);
+      return result.Envelope();
     }
 
     [HttpDelete]
     [Route("{id:Guid}/vehicle")]
-    public ActionResult<ReadOrderDto> RemoveVehicle(Guid id)
+    public ActionResult RemoveVehicle(Guid id)
     {
       var order = GetOrderById(id);
       if (order is null) return NotFound();
 
       var result = order.RemoveVehicle();
-      if (result.IsFailure) return result.Envelope();
       
-      return MapToReadOrderDto(order);
+      return result.Envelope();
     }
 
     [HttpPut]
     [Route("{id:Guid}/items")]
-    public ActionResult<ReadOrderDto> Get(Guid id, ChangeItemsDto input)
+    public ActionResult Get(Guid id, ChangeItemsDto input)
     {
       var order = GetOrderById(id);
       if (order is null) return NotFound();
 
       var result = order.UpdateItems(input.Items);
-      if (result.IsFailure) return result.Envelope();
       
-      return MapToReadOrderDto(order);
+      return result.Envelope();
     }
 
     private Order? GetOrderById(Guid id) => _orders.FirstOrDefault(o => o.Id == id);
