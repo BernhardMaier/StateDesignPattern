@@ -1,6 +1,5 @@
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace StateDesignPattern.API.Utils
 {
@@ -14,13 +13,10 @@ namespace StateDesignPattern.API.Utils
       return new OkResult();
     }
 
-    public static ActionResult Envelope<T>(this Result<T> result)
+    public static ActionResult<T> Envelope<T>(this Result<T> result)
     {
       if (result.IsFailure)
         return new BadRequestObjectResult(result.Error);
-
-      if (typeof(T) == typeof(string))
-        return new OkObjectResult(JsonConvert.SerializeObject(result.Value));
 
       return new OkObjectResult(result.Value);
     }

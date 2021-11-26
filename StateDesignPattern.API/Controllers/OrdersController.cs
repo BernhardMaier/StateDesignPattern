@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StateDesignPattern.API.DTOs;
 using StateDesignPattern.API.Utils;
 using StateDesignPattern.Logic;
+using StateDesignPattern.Logic.Interfaces;
 
 namespace StateDesignPattern.API.Controllers
 {
@@ -13,6 +15,7 @@ namespace StateDesignPattern.API.Controllers
   [Route("[controller]")]
   public class OrdersController : ControllerBase
   {
+    // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
     private readonly ILogger<OrdersController> _logger;
     private readonly List<Order> _orders;
 
@@ -27,12 +30,7 @@ namespace StateDesignPattern.API.Controllers
     [HttpGet]
     public ActionResult<IEnumerable<ReadOrderDto>> GetOrders()
     {
-      var dtoList = new List<ReadOrderDto>();
-      
-      foreach (var order in _orders)
-        dtoList.Add(MapToReadOrderDto(order));
-      
-      return dtoList;
+      return _orders.Select(order => MapToReadOrderDto(order).Value).ToList();
     }
 
     [HttpPost]
@@ -44,7 +42,7 @@ namespace StateDesignPattern.API.Controllers
       
       _orders.Add(newOrder);
       
-      return new CreatedResult(newOrder.Id.ToString(), MapToReadOrderDto(newOrder));
+      return new CreatedResult(newOrder.Id.ToString(), MapToReadOrderDto(newOrder).Value);
     }
     
     [HttpGet]
@@ -52,9 +50,7 @@ namespace StateDesignPattern.API.Controllers
     public ActionResult<ReadOrderDto> GetOrder(Guid id)
     {
       var order = GetOrderById(id);
-      if (order is null) return NotFound();
-      
-      return MapToReadOrderDto(order);
+      return MapToReadOrderDto(order).Envelope();
     }
 
     [HttpPut]
@@ -62,10 +58,7 @@ namespace StateDesignPattern.API.Controllers
     public ActionResult ChangeCustomer(Guid id, ChangeCustomerDto input)
     {
       var order = GetOrderById(id);
-      if (order is null) return NotFound();
-
       var result = order.ChangeCustomer(input.Customer);
-      
       return result.Envelope();
     }
 
@@ -74,10 +67,7 @@ namespace StateDesignPattern.API.Controllers
     public ActionResult RemoveCustomer(Guid id)
     {
       var order = GetOrderById(id);
-      if (order is null) return NotFound();
-
       var result = order.RemoveCustomer();
-      
       return result.Envelope();
     }
 
@@ -86,10 +76,7 @@ namespace StateDesignPattern.API.Controllers
     public ActionResult ChangeVehicle(Guid id, ChangeVehicleDto input)
     {
       var order = GetOrderById(id);
-      if (order is null) return NotFound();
-
       var result = order.ChangeVehicle(input.Vehicle);
-      
       return result.Envelope();
     }
 
@@ -98,10 +85,7 @@ namespace StateDesignPattern.API.Controllers
     public ActionResult RemoveVehicle(Guid id)
     {
       var order = GetOrderById(id);
-      if (order is null) return NotFound();
-
       var result = order.RemoveVehicle();
-      
       return result.Envelope();
     }
 
@@ -110,25 +94,22 @@ namespace StateDesignPattern.API.Controllers
     public ActionResult Get(Guid id, ChangeItemsDto input)
     {
       var order = GetOrderById(id);
-      if (order is null) return NotFound();
-
       var result = order.UpdateItems(input.Items);
-      
       return result.Envelope();
     }
 
-    private Order? GetOrderById(Guid id) => _orders.FirstOrDefault(o => o.Id == id);
+    private IOrder GetOrderById(Guid id) => _orders.FirstOrDefault(o => o.Id == id) ?? NoOrder.Instance(id);
 
-    private static ReadOrderDto MapToReadOrderDto(Order order)
+    private static Result<ReadOrderDto> MapToReadOrderDto(IOrder order)
     {
-      return new ReadOrderDto
+      return order.CanBeMapped.Map(() => new ReadOrderDto
       {
         Id = order.Id,
         CurrentState = order.CurrentState,
         Customer = order.Customer,
         Vehicle = order.Vehicle,
         Items = order.Items
-      };
+      });
     }
   }
 }

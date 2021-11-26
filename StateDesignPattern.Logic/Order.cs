@@ -25,7 +25,9 @@ namespace StateDesignPattern.Logic
       }
     }
 
-    public Guid Id { get; private set; }
+    public Result CanBeMapped => Result.Success();
+
+    public Guid Id { get; }
     public string CurrentState => State.Name;
     public string Customer { get; private set; } = string.Empty;
     public string Vehicle { get; private set; } = string.Empty;
