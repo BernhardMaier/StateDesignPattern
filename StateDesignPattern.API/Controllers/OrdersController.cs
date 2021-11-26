@@ -17,20 +17,19 @@ namespace StateDesignPattern.API.Controllers
   {
     // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
     private readonly ILogger<OrdersController> _logger;
-    private readonly List<Order> _orders;
+    private static readonly IList<Order> Orders = new List<Order>();
 
     public OrdersController(ILogger<OrdersController> logger)
     {
       _logger = logger;
-      _orders = new List<Order>();
-      
+
       _logger.Log(LogLevel.Information, "OrdersController initialized");
     }
 
     [HttpGet]
     public ActionResult<IEnumerable<ReadOrderDto>> GetOrders()
     {
-      return _orders.Select(order => MapToReadOrderDto(order).Value).ToList();
+      return Orders.Select(order => MapToReadOrderDto(order).Value).ToList();
     }
 
     [HttpPost]
@@ -40,7 +39,7 @@ namespace StateDesignPattern.API.Controllers
       newOrder.ChangeCustomer(input.Customer);
       newOrder.ChangeVehicle(input.Vehicle);
       
-      _orders.Add(newOrder);
+      Orders.Add(newOrder);
       
       return new CreatedResult(newOrder.Id.ToString(), MapToReadOrderDto(newOrder).Value);
     }
@@ -98,7 +97,7 @@ namespace StateDesignPattern.API.Controllers
       return result.Envelope();
     }
 
-    private IOrder GetOrderById(Guid id) => _orders.FirstOrDefault(o => o.Id == id) ?? NoOrder.Instance(id);
+    private IOrder GetOrderById(Guid id) => Orders.FirstOrDefault(o => o.Id == id) ?? NoOrder.Instance(id);
 
     private static Result<ReadOrderDto> MapToReadOrderDto(IOrder order)
     {
