@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using StateDesignPattern.API.DTOs;
+using StateDesignPattern.API.Features.Orders.DTOs;
 using StateDesignPattern.API.Utils;
 using StateDesignPattern.Logic;
 using StateDesignPattern.Logic.Interfaces;
 
-namespace StateDesignPattern.API.Controllers
+namespace StateDesignPattern.API.Features.Orders
 {
   [ApiController]
   [Route("[controller]")]

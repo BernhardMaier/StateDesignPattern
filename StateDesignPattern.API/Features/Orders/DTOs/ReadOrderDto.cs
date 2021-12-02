@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using StateDesignPattern.Logic.Interfaces;
 
-namespace StateDesignPattern.API.DTOs
+namespace StateDesignPattern.API.Features.Orders.DTOs
 {
   public class ReadOrderDto
   {

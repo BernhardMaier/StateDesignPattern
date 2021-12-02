@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace StateDesignPattern.API.DTOs
+namespace StateDesignPattern.API.Features.Orders.DTOs
 {
   public class ChangeItemsDto
   {
