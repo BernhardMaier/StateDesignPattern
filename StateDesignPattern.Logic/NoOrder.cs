@@ -25,11 +25,11 @@ namespace StateDesignPattern.Logic
     public Result Activate() => Result.Failure(Error);
     public Result<IInvoice> Complete() => Result.Failure<IInvoice>(Error);
     public Result Cancel() => Result.Failure(Error);
-    public Result UpdateItems(List<string> items) => Result.Failure(Error);
-    public Result ChangeCustomer(string customer) => Result.Failure(Error);
-    public Result RemoveCustomer() => Result.Failure(Error);
-    public Result ChangeVehicle(string vehicle) => Result.Failure(Error);
-    public Result RemoveVehicle() => Result.Failure(Error);
+    public Result<IOrder> UpdateItems(List<string> items) => Result.Failure<IOrder>(Error);
+    public Result<IOrder> ChangeCustomer(string customer) => Result.Failure<IOrder>(Error);
+    public Result<IOrder> RemoveCustomer() => Result.Failure<IOrder>(Error);
+    public Result<IOrder> ChangeVehicle(string vehicle) => Result.Failure<IOrder>(Error);
+    public Result<IOrder> RemoveVehicle() => Result.Failure<IOrder>(Error);
     
     public Result<T> Map<T>(Func<IOrder, T> mapping) => Result.Failure<T>(Error);
   }

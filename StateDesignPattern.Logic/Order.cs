@@ -12,7 +12,10 @@ namespace StateDesignPattern.Logic
     {
       Id = Guid.NewGuid();
     }
-    
+
+    public static Result<IOrder> Create() =>
+      Result.Success<IOrder>(new Order());
+
     private int StateType { get; set; }
     private IOrderState? _state;
     private IOrderState State
@@ -59,7 +62,7 @@ namespace StateDesignPattern.Logic
         .OnSuccessTry(SetState);
     }
 
-    public Result UpdateItems(List<string> items)
+    public Result<IOrder> UpdateItems(List<string> items)
     {
       return State
         .UpdateItems(() =>
@@ -67,10 +70,11 @@ namespace StateDesignPattern.Logic
           Items.Clear();
           Items.AddRange(items);
           return Result.Success();
-        });
+        })
+        .Bind(() => Result.Success<IOrder>(this));
     }
 
-    public Result ChangeCustomer(string customer)
+    public Result<IOrder> ChangeCustomer(string customer)
     {
       return State
         .ChangeCustomer(() =>
@@ -80,20 +84,22 @@ namespace StateDesignPattern.Logic
 
           Customer = customer;
           return Result.Success();
-        });
+        })
+        .Bind(() => Result.Success<IOrder>(this));
     }
 
-    public Result RemoveCustomer()
+    public Result<IOrder> RemoveCustomer()
     {
       return State
         .RemoveCustomer(() =>
         {
           Customer = string.Empty;
           return Result.Success();
-        });
+        })
+        .Bind(() => Result.Success<IOrder>(this));
     }
 
-    public Result ChangeVehicle(string vehicle)
+    public Result<IOrder> ChangeVehicle(string vehicle)
     {
       return State
         .ChangeVehicle(() =>
@@ -103,17 +109,19 @@ namespace StateDesignPattern.Logic
 
           Vehicle = vehicle;
           return Result.Success();
-        });
+        })
+        .Bind(() => Result.Success<IOrder>(this));
     }
 
-    public Result RemoveVehicle()
+    public Result<IOrder> RemoveVehicle()
     {
       return State
         .RemoveVehicle(() =>
         {
           Vehicle = string.Empty;
           return Result.Success();
-        });
+        })
+        .Bind(() => Result.Success<IOrder>(this));
     }
 
     public Result<T> Map<T>(Func<IOrder, T> mapping) => Result.Success(mapping(this));

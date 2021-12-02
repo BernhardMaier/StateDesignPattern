@@ -16,11 +16,11 @@ namespace StateDesignPattern.Logic.Interfaces
     Result<IInvoice> Complete();
     Result Cancel();
 
-    Result UpdateItems(List<string> items);
-    Result ChangeCustomer(string customer);
-    Result RemoveCustomer();
-    Result ChangeVehicle(string vehicle);
-    Result RemoveVehicle();
+    Result<IOrder> UpdateItems(List<string> items);
+    Result<IOrder> ChangeCustomer(string customer);
+    Result<IOrder> RemoveCustomer();
+    Result<IOrder> ChangeVehicle(string vehicle);
+    Result<IOrder> RemoveVehicle();
 
     Result<T> Map<T>(Func<IOrder, T> mapping);
   }

@@ -51,7 +51,7 @@ namespace StateDesignPattern.API.Features.Orders
     public ActionResult<ReadOrderDto> GetOrder(Guid id) =>
       GetOrderById(id)
         .Map(ToReadOrderDto)
-        .Envelope();
+        .EnvelopeWithObject();
 
     [HttpPut]
     [Route("{id:Guid}/customer")]
