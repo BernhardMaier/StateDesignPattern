@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StateDesignPattern.API.DTOs;
@@ -27,10 +26,11 @@ namespace StateDesignPattern.API.Controllers
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<ReadOrderDto>> GetOrders()
-    {
-      return Orders.Select(order => order.Map(ToReadOrderDto).Value).ToList();
-    }
+    public ActionResult<IEnumerable<ReadOrderDto>> GetOrders() => 
+      Orders
+        .Select(order =>
+          order.Map(ToReadOrderDto).Value)
+        .ToList();
 
     [HttpPost]
     public ActionResult<ReadOrderDto> CreateOrder(CreateOrderDto input)
@@ -48,70 +48,50 @@ namespace StateDesignPattern.API.Controllers
     
     [HttpGet]
     [Route("{id:Guid}")]
-    public ActionResult<ReadOrderDto> GetOrder(Guid id)
-    {
-      return GetOrderById(id)
+    public ActionResult<ReadOrderDto> GetOrder(Guid id) =>
+      GetOrderById(id)
         .Map(ToReadOrderDto)
         .Envelope();
-    }
 
     [HttpPut]
     [Route("{id:Guid}/customer")]
-    public ActionResult ChangeCustomer(Guid id, ChangeCustomerDto input)
-    {
-      return GetOrderById(id)
+    public ActionResult ChangeCustomer(Guid id, ChangeCustomerDto input) =>
+      GetOrderById(id)
         .ChangeCustomer(input.Customer)
         .Envelope();
-    }
 
     [HttpDelete]
     [Route("{id:Guid}/customer")]
-    public ActionResult RemoveCustomer(Guid id)
-    {
-      return GetOrderById(id)
+    public ActionResult RemoveCustomer(Guid id) =>
+      GetOrderById(id)
         .RemoveCustomer()
         .Envelope();
-    }
 
     [HttpPut]
     [Route("{id:Guid}/vehicle")]
-    public ActionResult ChangeVehicle(Guid id, ChangeVehicleDto input)
-    {
-      return GetOrderById(id)
+    public ActionResult ChangeVehicle(Guid id, ChangeVehicleDto input) =>
+      GetOrderById(id)
         .ChangeVehicle(input.Vehicle)
         .Envelope();
-    }
 
     [HttpDelete]
     [Route("{id:Guid}/vehicle")]
-    public ActionResult RemoveVehicle(Guid id)
-    {
-      return GetOrderById(id)
+    public ActionResult RemoveVehicle(Guid id) =>
+      GetOrderById(id)
         .RemoveVehicle()
         .Envelope();
-    }
 
     [HttpPut]
     [Route("{id:Guid}/items")]
-    public ActionResult Get(Guid id, ChangeItemsDto input)
-    {
-      return GetOrderById(id)
+    public ActionResult UpdateItems(Guid id, ChangeItemsDto input) =>
+      GetOrderById(id)
         .UpdateItems(input.Items)
         .Envelope();
-    }
 
-    private IOrder GetOrderById(Guid id) => Orders.FirstOrDefault(o => o.Id == id) ?? NoOrder.Instance(id);
+    private IOrder GetOrderById(Guid id) =>
+      Orders.FirstOrDefault(o => o.Id == id) ?? NoOrder.Instance(id);
 
-    private static ReadOrderDto ToReadOrderDto(IOrder order)
-    {
-      return new ReadOrderDto
-      {
-        Id = order.Id,
-        CurrentState = order.CurrentState,
-        Customer = order.Customer,
-        Vehicle = order.Vehicle,
-        Items = order.Items
-      };
-    }
+    private static ReadOrderDto ToReadOrderDto(IOrder order) =>
+      new(order);
   }
 }
