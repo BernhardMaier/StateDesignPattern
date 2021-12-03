@@ -36,16 +36,13 @@ namespace StateDesignPattern.Logic
 
     private void SetState(IOrderState newState) => State = newState;
 
-    public Result Activate()
-    {
-      return State
+    public Result Activate() =>
+      State
         .Activate(Customer)
         .OnSuccessTry(SetState);
-    }
-    
-    public Result<IInvoice> Complete()
-    {
-      return State
+
+    public Result<IInvoice> Complete() =>
+      State
         .Complete(Customer, Items.Count, () =>
         {
           var invoice = new Invoice();
@@ -53,18 +50,14 @@ namespace StateDesignPattern.Logic
         })
         .Tap(tuple => SetState(tuple.State))
         .Map(tuple => tuple.Invoice);
-    }
 
-    public Result Cancel()
-    {
-      return State
+    public Result Cancel() =>
+      State
         .Cancel()
         .OnSuccessTry(SetState);
-    }
 
-    public Result<IOrder> UpdateItems(List<string> items)
-    {
-      return State
+    public Result<IOrder> UpdateItems(List<string> items) =>
+      State
         .UpdateItems(() =>
         {
           Items.Clear();
@@ -72,11 +65,9 @@ namespace StateDesignPattern.Logic
           return Result.Success();
         })
         .Bind(() => Result.Success<IOrder>(this));
-    }
 
-    public Result<IOrder> ChangeCustomer(string customer)
-    {
-      return State
+    public Result<IOrder> ChangeCustomer(string customer) =>
+      State
         .ChangeCustomer(() =>
         {
           if (string.IsNullOrWhiteSpace(customer))
@@ -86,22 +77,18 @@ namespace StateDesignPattern.Logic
           return Result.Success();
         })
         .Bind(() => Result.Success<IOrder>(this));
-    }
 
-    public Result<IOrder> RemoveCustomer()
-    {
-      return State
+    public Result<IOrder> RemoveCustomer() =>
+      State
         .RemoveCustomer(() =>
         {
           Customer = string.Empty;
           return Result.Success();
         })
         .Bind(() => Result.Success<IOrder>(this));
-    }
 
-    public Result<IOrder> ChangeVehicle(string vehicle)
-    {
-      return State
+    public Result<IOrder> ChangeVehicle(string vehicle) =>
+      State
         .ChangeVehicle(() =>
         {
           if (string.IsNullOrWhiteSpace(vehicle))
@@ -111,18 +98,15 @@ namespace StateDesignPattern.Logic
           return Result.Success();
         })
         .Bind(() => Result.Success<IOrder>(this));
-    }
 
-    public Result<IOrder> RemoveVehicle()
-    {
-      return State
+    public Result<IOrder> RemoveVehicle() =>
+      State
         .RemoveVehicle(() =>
         {
           Vehicle = string.Empty;
           return Result.Success();
         })
         .Bind(() => Result.Success<IOrder>(this));
-    }
 
     public Result<T> Map<T>(Func<IOrder, T> mapping) => Result.Success(mapping(this));
   }
