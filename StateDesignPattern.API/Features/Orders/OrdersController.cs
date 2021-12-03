@@ -29,8 +29,9 @@ namespace StateDesignPattern.API.Features.Orders
     [HttpGet]
     public ActionResult<IEnumerable<ReadOrderDto>> GetOrders() => 
       Orders
-        .Select(order =>
-          order.Map(ToReadOrderDto).Value)
+        .Select(order => order.Map(ToReadOrderDto))
+        .Where(mapResult => mapResult.IsSuccess)
+        .Select(mapResult => mapResult.Value)
         .ToList();
 
     [HttpPost]
