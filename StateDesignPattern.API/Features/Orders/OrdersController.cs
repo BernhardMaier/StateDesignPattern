@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StateDesignPattern.API.Features.Orders.DTOs;
@@ -16,7 +17,7 @@ namespace StateDesignPattern.API.Features.Orders
   {
     // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
     private readonly ILogger<OrdersController> _logger;
-    private static readonly IList<Order> Orders = new List<Order>();
+    private static readonly IList<IOrder> Orders = new List<IOrder>();
 
     public OrdersController(ILogger<OrdersController> logger)
     {
@@ -33,60 +34,56 @@ namespace StateDesignPattern.API.Features.Orders
         .ToList();
 
     [HttpPost]
-    public ActionResult<ReadOrderDto> CreateOrder(CreateOrderDto input)
-    {
-      var newOrder = new Order();
-      newOrder.ChangeCustomer(input.Customer);
-      newOrder.ChangeVehicle(input.Vehicle);
-      
-      Orders.Add(newOrder);
+    public ActionResult<ReadOrderDto> CreateOrder(CreateOrderDto input) =>
+      Order
+        .Create()
+        .Check(order => order.ChangeCustomer(input.Customer))
+        .Check(order => order.ChangeVehicle(input.Vehicle))
+        .Tap(order => Orders.Add(order))
+        .Bind(order => order.Map(ToReadOrderDto))
+        .EnvelopeAsCreated(dto => dto.Id.ToString());
 
-      var dto = newOrder.Map(ToReadOrderDto).Value;
-
-      return new CreatedResult(newOrder.Id.ToString(), dto);
-    }
-    
     [HttpGet]
     [Route("{id:Guid}")]
     public ActionResult<ReadOrderDto> GetOrder(Guid id) =>
       GetOrderById(id)
         .Map(ToReadOrderDto)
-        .EnvelopeWithObject();
+        .EnvelopeAsOkObject();
 
     [HttpPut]
     [Route("{id:Guid}/customer")]
     public ActionResult ChangeCustomer(Guid id, ChangeCustomerDto input) =>
       GetOrderById(id)
         .ChangeCustomer(input.Customer)
-        .Envelope();
+        .EnvelopeAsOk();
 
     [HttpDelete]
     [Route("{id:Guid}/customer")]
     public ActionResult RemoveCustomer(Guid id) =>
       GetOrderById(id)
         .RemoveCustomer()
-        .Envelope();
+        .EnvelopeAsOk();
 
     [HttpPut]
     [Route("{id:Guid}/vehicle")]
     public ActionResult ChangeVehicle(Guid id, ChangeVehicleDto input) =>
       GetOrderById(id)
         .ChangeVehicle(input.Vehicle)
-        .Envelope();
+        .EnvelopeAsOk();
 
     [HttpDelete]
     [Route("{id:Guid}/vehicle")]
     public ActionResult RemoveVehicle(Guid id) =>
       GetOrderById(id)
         .RemoveVehicle()
-        .Envelope();
+        .EnvelopeAsOk();
 
     [HttpPut]
     [Route("{id:Guid}/items")]
     public ActionResult UpdateItems(Guid id, ChangeItemsDto input) =>
       GetOrderById(id)
         .UpdateItems(input.Items)
-        .Envelope();
+        .EnvelopeAsOk();
 
     private IOrder GetOrderById(Guid id) =>
       Orders.FirstOrDefault(o => o.Id == id) ?? NoOrder.Instance(id);
