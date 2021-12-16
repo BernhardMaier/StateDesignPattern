@@ -1,7 +1,6 @@
-namespace StateDesignPattern.API.Features.Orders.DTOs
+namespace StateDesignPattern.API.Features.Orders.DTOs;
+
+public class ChangeVehicleDto
 {
-  public class ChangeVehicleDto
-  {
-    public string Vehicle { get; set; } = string.Empty;
-  }
+  public string Vehicle { get; set; } = string.Empty;
 }

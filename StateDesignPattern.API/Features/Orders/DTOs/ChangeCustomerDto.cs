@@ -1,7 +1,6 @@
-namespace StateDesignPattern.API.Features.Orders.DTOs
+namespace StateDesignPattern.API.Features.Orders.DTOs;
+
+public class ChangeCustomerDto
 {
-  public class ChangeCustomerDto
-  {
-    public string Customer { get; set; } = string.Empty;
-  }
+  public string Customer { get; set; } = string.Empty;
 }

@@ -1,6 +1,5 @@
-﻿namespace StateDesignPattern.Logic.Interfaces
+﻿namespace StateDesignPattern.Logic.Interfaces;
+
+public interface IInvoice
 {
-  public interface IInvoice
-  {
-  }
 }

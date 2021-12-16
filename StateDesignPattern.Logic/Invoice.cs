@@ -1,8 +1,7 @@
 ﻿using StateDesignPattern.Logic.Interfaces;
 
-namespace StateDesignPattern.Logic
+namespace StateDesignPattern.Logic;
+
+public class Invoice : IInvoice
 {
-  public class Invoice : IInvoice
-  {
-  }
 }

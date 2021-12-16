@@ -1,19 +1,18 @@
 ﻿using StateDesignPattern.Logic.Interfaces;
 
-namespace StateDesignPattern.Logic.OrderStates
+namespace StateDesignPattern.Logic.OrderStates;
+
+public static class OrderStateFactory
 {
-  public static class OrderStateFactory
+  public static IOrderState Create(int orderStateTypeId)
   {
-    public static IOrderState Create(int orderStateTypeId)
+    return orderStateTypeId switch
     {
-      return orderStateTypeId switch
-      {
-        (int)OrderStateType.New => new New(),
-        (int)OrderStateType.Active => new Active(),
-        (int)OrderStateType.Completed => new Completed(),
-        (int)OrderStateType.Canceled => new Canceled(),
-        _ => new New()
-      };
-    }
+      (int)OrderStateType.New => new New(),
+      (int)OrderStateType.Active => new Active(),
+      (int)OrderStateType.Completed => new Completed(),
+      (int)OrderStateType.Canceled => new Canceled(),
+      _ => new New()
+    };
   }
 }

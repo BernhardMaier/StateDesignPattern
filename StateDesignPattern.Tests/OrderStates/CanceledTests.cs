@@ -4,176 +4,175 @@ using StateDesignPattern.Logic.Interfaces;
 using StateDesignPattern.Logic.OrderStates;
 using Xunit;
 
-namespace StateDesignPattern.Tests.OrderStates
+namespace StateDesignPattern.Tests.OrderStates;
+
+public class CanceledTests
 {
-  public class CanceledTests
+  [Fact]
+  public void Property_name_returns_class_name()
   {
-    [Fact]
-    public void Property_name_returns_class_name()
-    {
-      var canceledState = new Canceled();
+    var canceledState = new Canceled();
 
-      canceledState.Name.Should().Be(nameof(Canceled));
+    canceledState.Name.Should().Be(nameof(Canceled));
+  }
+
+  [Fact]
+  public void Property_type_returns_correct_enum_value()
+  {
+    var canceledState = new Canceled();
+
+    canceledState.Type.Should().Be(OrderStateType.Canceled);
+  }
+
+  public class Activate
+  {
+    private readonly IOrderState _canceledState;
+
+    public Activate()
+    {
+      _canceledState = new Canceled();
     }
 
     [Fact]
-    public void Property_type_returns_correct_enum_value()
+    public void returns_the_expected_failure_result()
     {
-      var canceledState = new Canceled();
+      var result = _canceledState.Activate("John Doe");
 
-      canceledState.Type.Should().Be(OrderStateType.Canceled);
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("State can not be changed to 'Active'.");
+    }
+  }
+
+  public class Complete
+  {
+    private readonly IOrderState _canceledState;
+
+    public Complete()
+    {
+      _canceledState = new Canceled();
     }
 
-    public class Activate
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _canceledState;
+      var result = _canceledState.Complete(string.Empty, 0, null!);
 
-      public Activate()
-      {
-        _canceledState = new Canceled();
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("State can not be changed to 'Completed'.");
+    }
+  }
 
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _canceledState.Activate("John Doe");
+  public class Cancel
+  {
+    private readonly IOrderState _canceledState;
 
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("State can not be changed to 'Active'.");
-      }
+    public Cancel()
+    {
+      _canceledState = new Canceled();
     }
 
-    public class Complete
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _canceledState;
+      var result = _canceledState.Cancel();
 
-      public Complete()
-      {
-        _canceledState = new Canceled();
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("State is already 'Canceled'.");
+    }
+  }
 
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _canceledState.Complete(string.Empty, 0, null!);
+  public class UpdateItems
+  {
+    private readonly IOrderState _canceledState;
 
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("State can not be changed to 'Completed'.");
-      }
+    public UpdateItems()
+    {
+      _canceledState = new Canceled();
     }
 
-    public class Cancel
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _canceledState;
+      var result = _canceledState.UpdateItems(Result.Success);
 
-      public Cancel()
-      {
-        _canceledState = new Canceled();
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("Items can not be updated in state 'Canceled'.");
+    }
+  }
 
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _canceledState.Cancel();
+  public class ChangeCustomer
+  {
+    private readonly IOrderState _canceledState;
 
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("State is already 'Canceled'.");
-      }
+    public ChangeCustomer()
+    {
+      _canceledState = new Canceled();
     }
 
-    public class UpdateItems
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _canceledState;
+      var result = _canceledState.ChangeCustomer(Result.Success);
 
-      public UpdateItems()
-      {
-        _canceledState = new Canceled();
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("Customer can not be changed in state 'Canceled'.");
+    }
+  }
 
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _canceledState.UpdateItems(Result.Success);
+  public class RemoveCustomer
+  {
+    private readonly IOrderState _canceledState;
 
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Items can not be updated in state 'Canceled'.");
-      }
+    public RemoveCustomer()
+    {
+      _canceledState = new Canceled();
     }
 
-    public class ChangeCustomer
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _canceledState;
+      var result = _canceledState.RemoveCustomer(Result.Success);
 
-      public ChangeCustomer()
-      {
-        _canceledState = new Canceled();
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("Customer can not be removed in state 'Canceled'.");
+    }
+  }
 
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _canceledState.ChangeCustomer(Result.Success);
+  public class ChangeVehicle
+  {
+    private readonly IOrderState _canceledState;
 
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Customer can not be changed in state 'Canceled'.");
-      }
+    public ChangeVehicle()
+    {
+      _canceledState = new Canceled();
     }
 
-    public class RemoveCustomer
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _canceledState;
+      var result = _canceledState.ChangeVehicle(Result.Success);
 
-      public RemoveCustomer()
-      {
-        _canceledState = new Canceled();
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("Vehicle can not be changed in state 'Canceled'.");
+    }
+  }
 
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _canceledState.RemoveCustomer(Result.Success);
+  public class RemoveVehicle
+  {
+    private readonly IOrderState _canceledState;
 
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Customer can not be removed in state 'Canceled'.");
-      }
+    public RemoveVehicle()
+    {
+      _canceledState = new Canceled();
     }
 
-    public class ChangeVehicle
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _canceledState;
+      var result = _canceledState.RemoveVehicle(Result.Success);
 
-      public ChangeVehicle()
-      {
-        _canceledState = new Canceled();
-      }
-
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _canceledState.ChangeVehicle(Result.Success);
-
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Vehicle can not be changed in state 'Canceled'.");
-      }
-    }
-
-    public class RemoveVehicle
-    {
-      private readonly IOrderState _canceledState;
-
-      public RemoveVehicle()
-      {
-        _canceledState = new Canceled();
-      }
-
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _canceledState.RemoveVehicle(Result.Success);
-
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Vehicle can not be removed in state 'Canceled'.");
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("Vehicle can not be removed in state 'Canceled'.");
     }
   }
 }

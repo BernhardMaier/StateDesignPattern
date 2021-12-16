@@ -1,10 +1,9 @@
-﻿namespace StateDesignPattern.Logic.OrderStates
+﻿namespace StateDesignPattern.Logic.OrderStates;
+
+public enum OrderStateType
 {
-  public enum OrderStateType
-  {
-    New = 0,
-    Active = 1,
-    Completed = 2,
-    Canceled = 3
-  }
+  New = 0,
+  Active = 1,
+  Completed = 2,
+  Canceled = 3
 }

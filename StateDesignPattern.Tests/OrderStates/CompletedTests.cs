@@ -4,176 +4,175 @@ using StateDesignPattern.Logic.Interfaces;
 using StateDesignPattern.Logic.OrderStates;
 using Xunit;
 
-namespace StateDesignPattern.Tests.OrderStates
+namespace StateDesignPattern.Tests.OrderStates;
+
+public class CompletedTests
 {
-  public class CompletedTests
+  [Fact]
+  public void Property_name_returns_class_name()
   {
-    [Fact]
-    public void Property_name_returns_class_name()
-    {
-      var completedState = new Completed();
+    var completedState = new Completed();
 
-      completedState.Name.Should().Be(nameof(Completed));
+    completedState.Name.Should().Be(nameof(Completed));
+  }
+
+  [Fact]
+  public void Property_type_returns_correct_enum_value()
+  {
+    var completedState = new Completed();
+
+    completedState.Type.Should().Be(OrderStateType.Completed);
+  }
+
+  public class Activate
+  {
+    private readonly IOrderState _completedState;
+
+    public Activate()
+    {
+      _completedState = new Completed();
     }
 
     [Fact]
-    public void Property_type_returns_correct_enum_value()
+    public void returns_the_expected_failure_result()
     {
-      var completedState = new Completed();
+      var result = _completedState.Activate("John Doe");
 
-      completedState.Type.Should().Be(OrderStateType.Completed);
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("State can not be changed to 'Active'.");
+    }
+  }
+
+  public class Complete
+  {
+    private readonly IOrderState _completedState;
+
+    public Complete()
+    {
+      _completedState = new Completed();
     }
 
-    public class Activate
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _completedState;
+      var result = _completedState.Complete(string.Empty, 0, null!);
 
-      public Activate()
-      {
-        _completedState = new Completed();
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("State is already 'Completed'.");
+    }
+  }
 
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _completedState.Activate("John Doe");
+  public class Cancel
+  {
+    private readonly IOrderState _completedState;
 
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("State can not be changed to 'Active'.");
-      }
+    public Cancel()
+    {
+      _completedState = new Completed();
     }
 
-    public class Complete
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _completedState;
+      var result = _completedState.Cancel();
 
-      public Complete()
-      {
-        _completedState = new Completed();
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("State can not be changed to 'Canceled'.");
+    }
+  }
 
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _completedState.Complete(string.Empty, 0, null!);
+  public class UpdateItems
+  {
+    private readonly IOrderState _completedState;
 
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("State is already 'Completed'.");
-      }
+    public UpdateItems()
+    {
+      _completedState = new Completed();
     }
 
-    public class Cancel
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _completedState;
+      var result = _completedState.UpdateItems(Result.Success);
 
-      public Cancel()
-      {
-        _completedState = new Completed();
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("Items can not be updated in state 'Completed'.");
+    }
+  }
 
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _completedState.Cancel();
+  public class ChangeCustomer
+  {
+    private readonly IOrderState _completedState;
 
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("State can not be changed to 'Canceled'.");
-      }
+    public ChangeCustomer()
+    {
+      _completedState = new Completed();
     }
 
-    public class UpdateItems
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _completedState;
+      var result = _completedState.ChangeCustomer(Result.Success);
 
-      public UpdateItems()
-      {
-        _completedState = new Completed();
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("Customer can not be changed in state 'Completed'.");
+    }
+  }
 
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _completedState.UpdateItems(Result.Success);
+  public class RemoveCustomer
+  {
+    private readonly IOrderState _completedState;
 
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Items can not be updated in state 'Completed'.");
-      }
+    public RemoveCustomer()
+    {
+      _completedState = new Completed();
     }
 
-    public class ChangeCustomer
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _completedState;
+      var result = _completedState.RemoveCustomer(Result.Success);
 
-      public ChangeCustomer()
-      {
-        _completedState = new Completed();
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("Customer can not be removed in state 'Completed'.");
+    }
+  }
 
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _completedState.ChangeCustomer(Result.Success);
+  public class ChangeVehicle
+  {
+    private readonly IOrderState _completedState;
 
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Customer can not be changed in state 'Completed'.");
-      }
+    public ChangeVehicle()
+    {
+      _completedState = new Completed();
     }
 
-    public class RemoveCustomer
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _completedState;
+      var result = _completedState.ChangeVehicle(Result.Success);
 
-      public RemoveCustomer()
-      {
-        _completedState = new Completed();
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("Vehicle can not be changed in state 'Completed'.");
+    }
+  }
 
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _completedState.RemoveCustomer(Result.Success);
+  public class RemoveVehicle
+  {
+    private readonly IOrderState _completedState;
 
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Customer can not be removed in state 'Completed'.");
-      }
+    public RemoveVehicle()
+    {
+      _completedState = new Completed();
     }
 
-    public class ChangeVehicle
+    [Fact]
+    public void returns_the_expected_failure_result()
     {
-      private readonly IOrderState _completedState;
+      var result = _completedState.RemoveVehicle(Result.Success);
 
-      public ChangeVehicle()
-      {
-        _completedState = new Completed();
-      }
-
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _completedState.ChangeVehicle(Result.Success);
-
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Vehicle can not be changed in state 'Completed'.");
-      }
-    }
-
-    public class RemoveVehicle
-    {
-      private readonly IOrderState _completedState;
-
-      public RemoveVehicle()
-      {
-        _completedState = new Completed();
-      }
-
-      [Fact]
-      public void returns_the_expected_failure_result()
-      {
-        var result = _completedState.RemoveVehicle(Result.Success);
-
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Vehicle can not be removed in state 'Completed'.");
-      }
+      result.IsFailure.Should().BeTrue();
+      result.Error.Should().Be("Vehicle can not be removed in state 'Completed'.");
     }
   }
 }
