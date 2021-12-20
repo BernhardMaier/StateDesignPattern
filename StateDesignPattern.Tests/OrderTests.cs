@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using StateDesignPattern.Logic;
+using StateDesignPattern.Logic.Interfaces;
 using StateDesignPattern.Logic.OrderStates;
 using Xunit;
 
@@ -12,7 +13,7 @@ public class OrderTests
   [Fact]
   public void Properties_are_initialized_correctly()
   {
-    var order = new Order();
+    var order = Order.Create().Value;
 
     order.Id.Should().NotBeEmpty();
     order.Customer.Should().BeEmpty();
@@ -23,7 +24,7 @@ public class OrderTests
   [Fact]
   public void Initial_order_state_is_new()
   {
-    var order = new Order();
+    var order = Order.Create().Value;
 
     order.CurrentState.Should().Be(nameof(New));
   }
@@ -31,11 +32,11 @@ public class OrderTests
   [SuppressMessage("ReSharper", "InconsistentNaming")]
   public class Order_in_state_new
   {
-    private readonly Order _order;
+    private readonly IOrder _order;
 
     public Order_in_state_new()
     {
-      _order = new Order();
+      _order = Order.Create().Value;
     }
 
     [Fact]
@@ -153,11 +154,11 @@ public class OrderTests
   public class Order_in_state_active
   {
     private const string InitialCustomer = "John Doe";
-    private readonly Order _order;
+    private readonly IOrder _order;
 
     public Order_in_state_active()
     {
-      _order = new Order();
+      _order = Order.Create().Value;
       _order.ChangeCustomer(InitialCustomer);
       _order.Activate();
     }

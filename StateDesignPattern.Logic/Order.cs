@@ -8,7 +8,7 @@ namespace StateDesignPattern.Logic;
 
 public class Order : IOrder
 {
-  public Order()
+  private Order()
   {
     Id = Guid.NewGuid();
   }
