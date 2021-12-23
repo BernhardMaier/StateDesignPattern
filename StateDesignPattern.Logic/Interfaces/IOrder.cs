@@ -4,9 +4,8 @@ using CSharpFunctionalExtensions;
 
 namespace StateDesignPattern.Logic.Interfaces;
 
-public interface IOrder
+public interface IOrder : IHasGuid
 {
-  Guid Id { get; }
   string CurrentState { get; }
   string Customer { get; }
   string Vehicle { get; }
