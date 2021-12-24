@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,7 +18,7 @@ public class OrdersController : ControllerBase
 {
   // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
   private readonly ILogger<OrdersController> _logger;
-  private static readonly IList<IOrder> Orders = new List<IOrder>();
+  private static readonly IList<Order> Orders = new List<Order>();
 
   public OrdersController(ILogger<OrdersController> logger)
   {
@@ -55,39 +56,44 @@ public class OrdersController : ControllerBase
   [Route("{id:Guid}/customer")]
   public ActionResult ChangeCustomer(Guid id, ChangeCustomerDto input) =>
     GetOrderById(id)
-      .ChangeCustomer(input.Customer)
+      .Check(order => order.ChangeCustomer(input.Customer))
       .EnvelopeAsOk();
 
   [HttpDelete]
   [Route("{id:Guid}/customer")]
   public ActionResult RemoveCustomer(Guid id) =>
     GetOrderById(id)
-      .RemoveCustomer()
+      .Check(order => order.RemoveCustomer())
       .EnvelopeAsOk();
 
   [HttpPut]
   [Route("{id:Guid}/vehicle")]
   public ActionResult ChangeVehicle(Guid id, ChangeVehicleDto input) =>
     GetOrderById(id)
-      .ChangeVehicle(input.Vehicle)
+      .Check(order => order.ChangeVehicle(input.Vehicle))
       .EnvelopeAsOk();
 
   [HttpDelete]
   [Route("{id:Guid}/vehicle")]
   public ActionResult RemoveVehicle(Guid id) =>
     GetOrderById(id)
-      .RemoveVehicle()
+      .Check(order => order.RemoveVehicle())
       .EnvelopeAsOk();
 
   [HttpPut]
   [Route("{id:Guid}/items")]
   public ActionResult UpdateItems(Guid id, ChangeItemsDto input) =>
     GetOrderById(id)
-      .UpdateItems(input.Items)
+      .Check(order => order.UpdateItems(input.Items))
       .EnvelopeAsOk();
 
-  private IOrder GetOrderById(Guid id) =>
-    Orders.FirstOrDefault(o => o.Id == id) ?? NoOrder.Instance(id);
+  private static Result<Order> GetOrderById(Guid id)
+  {
+    var order = Orders.FirstOrDefault(o => o.Id == id);
+    return order is null
+      ? Result.Failure<Order>(HttpStatusCode.NotFound.ToString())
+      : Result.Success(order);
+  }
 
   private static ReadOrderDto ToReadOrderDto(IOrder order) =>
     new(order);

@@ -5,5 +5,10 @@ namespace StateDesignPattern.Logic;
 
 public class Invoice : IInvoice
 {
+  public Invoice()
+  {
+    Id = Guid.NewGuid();
+  }
+
   public Guid Id { get; }
 }

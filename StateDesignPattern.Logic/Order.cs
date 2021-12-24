@@ -13,8 +13,8 @@ public class Order : IOrder
     Id = Guid.NewGuid();
   }
 
-  public static Result<IOrder> Create() =>
-    Result.Success<IOrder>(new Order());
+  public static Result<Order> Create() =>
+    Result.Success(new Order());
 
   private int StateType { get; set; }
   private IOrderState? _state;
