@@ -49,6 +49,7 @@ public class OrdersController : ControllerBase
   [Route("{id:Guid}")]
   public ActionResult<ReadOrderDto> GetOrder(Guid id) =>
     GetOrderById(id)
+      .ToResult(HttpStatusCode.NotFound.ToString())
       .Map(ToReadOrderDto)
       .EnvelopeAsOkObject();
 
@@ -56,6 +57,7 @@ public class OrdersController : ControllerBase
   [Route("{id:Guid}/customer")]
   public ActionResult ChangeCustomer(Guid id, ChangeCustomerDto input) =>
     GetOrderById(id)
+      .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.ChangeCustomer(input.Customer))
       .EnvelopeAsOk();
 
@@ -63,6 +65,7 @@ public class OrdersController : ControllerBase
   [Route("{id:Guid}/customer")]
   public ActionResult RemoveCustomer(Guid id) =>
     GetOrderById(id)
+      .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.RemoveCustomer())
       .EnvelopeAsOk();
 
@@ -70,6 +73,7 @@ public class OrdersController : ControllerBase
   [Route("{id:Guid}/vehicle")]
   public ActionResult ChangeVehicle(Guid id, ChangeVehicleDto input) =>
     GetOrderById(id)
+      .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.ChangeVehicle(input.Vehicle))
       .EnvelopeAsOk();
 
@@ -77,6 +81,7 @@ public class OrdersController : ControllerBase
   [Route("{id:Guid}/vehicle")]
   public ActionResult RemoveVehicle(Guid id) =>
     GetOrderById(id)
+      .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.RemoveVehicle())
       .EnvelopeAsOk();
 
@@ -84,15 +89,16 @@ public class OrdersController : ControllerBase
   [Route("{id:Guid}/items")]
   public ActionResult UpdateItems(Guid id, ChangeItemsDto input) =>
     GetOrderById(id)
+      .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.UpdateItems(input.Items))
       .EnvelopeAsOk();
 
-  private static Result<Order> GetOrderById(Guid id)
+  private static Maybe<Order> GetOrderById(Guid id)
   {
     var order = Orders.FirstOrDefault(o => o.Id == id);
     return order is null
-      ? Result.Failure<Order>(HttpStatusCode.NotFound.ToString())
-      : Result.Success(order);
+      ? Maybe<Order>.None
+      : Maybe<Order>.From(order);
   }
 
   private static ReadOrderDto ToReadOrderDto(IOrder order) =>
