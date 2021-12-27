@@ -42,8 +42,8 @@ public class OrdersController : ControllerBase
       .Check(order => order.ChangeCustomer(input.Customer))
       .Check(order => order.ChangeVehicle(input.Vehicle))
       .Tap(order => Orders.Add(order))
-      .Bind(order => order.Map(ToReadOrderDto))
-      .EnvelopeAsCreated(dto => dto.Id.ToString());
+      .Map(ToReadOrderDto)
+      .EnvelopeAsCreated();
 
   [HttpGet]
   [Route("{id:Guid}")]

@@ -31,9 +31,10 @@ public static class ResultExtensions
         ? new StatusCodeResult((int) statusCode)
         : new BadRequestObjectResult(result.Error);
 
-  public static ActionResult<TResult> EnvelopeAsCreated<TResult>(this Result<TResult> result, Func<TResult, string> getIdFromT) =>
+  public static ActionResult<T> EnvelopeAsCreated<T>(this Result<T> result)
+    where T : IHasGuid =>
     result.IsSuccess
-      ? new CreatedResult(getIdFromT(result.Value), result.Value)
+      ? new CreatedResult(result.Value.Id.ToString(), result.Value)
       : Enum.TryParse(result.Error, out HttpStatusCode statusCode)
         ? new StatusCodeResult((int) statusCode)
         : new BadRequestObjectResult(result.Error);

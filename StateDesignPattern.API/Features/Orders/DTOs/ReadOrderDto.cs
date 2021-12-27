@@ -4,7 +4,7 @@ using StateDesignPattern.Logic.Interfaces;
 
 namespace StateDesignPattern.API.Features.Orders.DTOs;
 
-public class ReadOrderDto
+public class ReadOrderDto : IHasGuid
 {
   public ReadOrderDto(IOrder order)
   {
