@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using StateDesignPattern.Logic.Interfaces;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace StateDesignPattern.API.Features.Orders.DTOs;
 
@@ -15,9 +16,9 @@ public class ReadOrderDto : IHasGuid
     Items = order.Items;
   }
     
-  public Guid Id { get; set; }
-  public string CurrentState { get; init; } = string.Empty;
-  public string Customer { get; init; } = string.Empty;
-  public string Vehicle { get; init; } = string.Empty;
-  public List<string> Items { get; init; } = new();
+  public Guid Id { get; }
+  public string CurrentState { get; }
+  public string Customer { get; }
+  public string Vehicle { get; }
+  public List<string> Items { get; }
 }

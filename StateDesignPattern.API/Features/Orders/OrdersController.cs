@@ -6,6 +6,7 @@ using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StateDesignPattern.API.Features.Orders.DTOs;
+using StateDesignPattern.API.Features.Orders.Repository;
 using StateDesignPattern.API.Utils;
 using StateDesignPattern.Logic;
 using StateDesignPattern.Logic.Interfaces;
@@ -18,10 +19,11 @@ public class OrdersController : ControllerBase
 {
   // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
   private readonly ILogger<OrdersController> _logger;
-  private static readonly IList<Order> Orders = new List<Order>();
+  private readonly IOrderRepository _orderRepository;
 
   public OrdersController(ILogger<OrdersController> logger)
   {
+    _orderRepository = OrderRepository.Instance;
     _logger = logger;
 
     _logger.Log(LogLevel.Information, "OrdersController initialized");
@@ -29,7 +31,8 @@ public class OrdersController : ControllerBase
 
   [HttpGet]
   public ActionResult<IEnumerable<ReadOrderDto>> GetOrders() => 
-    Orders
+    _orderRepository
+      .GetAllOrders()
       .Select(order => order.Map(ToReadOrderDto))
       .Where(mapResult => mapResult.IsSuccess)
       .Select(mapResult => mapResult.Value)
@@ -41,14 +44,15 @@ public class OrdersController : ControllerBase
       .Create()
       .Check(order => order.ChangeCustomer(input.Customer))
       .Check(order => order.ChangeVehicle(input.Vehicle))
-      .Tap(order => Orders.Add(order))
+      .Check(order => _orderRepository.AddOrder(order))
       .Map(ToReadOrderDto)
       .EnvelopeAsCreated();
 
   [HttpGet]
   [Route("{id:Guid}")]
   public ActionResult<ReadOrderDto> GetOrder(Guid id) =>
-    GetOrderById(id)
+    _orderRepository
+      .GetOrderById(id)
       .ToResult(HttpStatusCode.NotFound.ToString())
       .Map(ToReadOrderDto)
       .EnvelopeAsOkObject();
@@ -56,7 +60,8 @@ public class OrdersController : ControllerBase
   [HttpPut]
   [Route("{id:Guid}/customer")]
   public ActionResult ChangeCustomer(Guid id, ChangeCustomerDto input) =>
-    GetOrderById(id)
+    _orderRepository
+      .GetOrderById(id)
       .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.ChangeCustomer(input.Customer))
       .EnvelopeAsOk();
@@ -64,7 +69,8 @@ public class OrdersController : ControllerBase
   [HttpDelete]
   [Route("{id:Guid}/customer")]
   public ActionResult RemoveCustomer(Guid id) =>
-    GetOrderById(id)
+    _orderRepository
+      .GetOrderById(id)
       .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.RemoveCustomer())
       .EnvelopeAsOk();
@@ -72,7 +78,8 @@ public class OrdersController : ControllerBase
   [HttpPut]
   [Route("{id:Guid}/vehicle")]
   public ActionResult ChangeVehicle(Guid id, ChangeVehicleDto input) =>
-    GetOrderById(id)
+    _orderRepository
+      .GetOrderById(id)
       .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.ChangeVehicle(input.Vehicle))
       .EnvelopeAsOk();
@@ -80,7 +87,8 @@ public class OrdersController : ControllerBase
   [HttpDelete]
   [Route("{id:Guid}/vehicle")]
   public ActionResult RemoveVehicle(Guid id) =>
-    GetOrderById(id)
+    _orderRepository
+      .GetOrderById(id)
       .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.RemoveVehicle())
       .EnvelopeAsOk();
@@ -88,19 +96,11 @@ public class OrdersController : ControllerBase
   [HttpPut]
   [Route("{id:Guid}/items")]
   public ActionResult UpdateItems(Guid id, ChangeItemsDto input) =>
-    GetOrderById(id)
+    _orderRepository
+      .GetOrderById(id)
       .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.UpdateItems(input.Items))
       .EnvelopeAsOk();
 
-  private static Maybe<Order> GetOrderById(Guid id)
-  {
-    var order = Orders.FirstOrDefault(o => o.Id == id);
-    return order is null
-      ? Maybe<Order>.None
-      : Maybe<Order>.From(order);
-  }
-
-  private static ReadOrderDto ToReadOrderDto(IOrder order) =>
-    new(order);
+  private static ReadOrderDto ToReadOrderDto(IOrder order) => new(order);
 }
