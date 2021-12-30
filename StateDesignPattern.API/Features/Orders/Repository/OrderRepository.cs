@@ -31,4 +31,6 @@ public class OrderRepository : IOrderRepository
       ? Maybe<Order>.None
       : Maybe<Order>.From(order);
   }
+
+  public Result Save() => Result.Success();
 }

@@ -45,6 +45,7 @@ public class OrdersController : ControllerBase
       .Check(order => order.ChangeCustomer(input.Customer))
       .Check(order => order.ChangeVehicle(input.Vehicle))
       .Check(order => _orderRepository.AddOrder(order))
+      .Check(_ => _orderRepository.Save())
       .Map(ToReadOrderDto)
       .EnvelopeAsCreated();
 
@@ -64,6 +65,7 @@ public class OrdersController : ControllerBase
       .GetOrderById(id)
       .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.ChangeCustomer(input.Customer))
+      .Check(_ => _orderRepository.Save())
       .EnvelopeAsOk();
 
   [HttpDelete]
@@ -73,6 +75,7 @@ public class OrdersController : ControllerBase
       .GetOrderById(id)
       .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.RemoveCustomer())
+      .Check(_ => _orderRepository.Save())
       .EnvelopeAsOk();
 
   [HttpPut]
@@ -82,6 +85,7 @@ public class OrdersController : ControllerBase
       .GetOrderById(id)
       .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.ChangeVehicle(input.Vehicle))
+      .Check(_ => _orderRepository.Save())
       .EnvelopeAsOk();
 
   [HttpDelete]
@@ -91,6 +95,7 @@ public class OrdersController : ControllerBase
       .GetOrderById(id)
       .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.RemoveVehicle())
+      .Check(_ => _orderRepository.Save())
       .EnvelopeAsOk();
 
   [HttpPut]
@@ -100,6 +105,7 @@ public class OrdersController : ControllerBase
       .GetOrderById(id)
       .ToResult(HttpStatusCode.NotFound.ToString())
       .Check(order => order.UpdateItems(input.Items))
+      .Check(_ => _orderRepository.Save())
       .EnvelopeAsOk();
 
   private static ReadOrderDto ToReadOrderDto(IOrder order) => new(order);

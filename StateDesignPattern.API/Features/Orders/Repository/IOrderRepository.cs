@@ -10,4 +10,5 @@ public interface IOrderRepository
   IEnumerable<Order> GetAllOrders();
   Result AddOrder(Order order);
   Maybe<Order> GetOrderById(Guid id);
+  Result Save();
 }
