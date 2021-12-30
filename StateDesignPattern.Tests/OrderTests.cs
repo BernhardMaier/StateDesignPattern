@@ -32,7 +32,7 @@ public class OrderTests
   [SuppressMessage("ReSharper", "InconsistentNaming")]
   public class Order_in_state_new
   {
-    private readonly IOrder _order;
+    private readonly Order _order;
 
     public Order_in_state_new()
     {

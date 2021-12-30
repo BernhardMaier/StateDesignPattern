@@ -56,17 +56,16 @@ public class Order : IOrder
       .Cancel()
       .OnSuccessTry(SetState);
 
-  public Result<IOrder> UpdateItems(List<string> items) =>
+  public Result UpdateItems(List<string> items) =>
     State
       .UpdateItems(() =>
       {
         Items.Clear();
         Items.AddRange(items);
         return Result.Success();
-      })
-      .Bind(() => Result.Success<IOrder>(this));
+      });
 
-  public Result<IOrder> ChangeCustomer(string customer) =>
+  public Result ChangeCustomer(string customer) =>
     State
       .ChangeCustomer(() =>
       {
@@ -75,19 +74,17 @@ public class Order : IOrder
 
         Customer = customer;
         return Result.Success();
-      })
-      .Bind(() => Result.Success<IOrder>(this));
+      });
 
-  public Result<IOrder> RemoveCustomer() =>
+  public Result RemoveCustomer() =>
     State
       .RemoveCustomer(() =>
       {
         Customer = string.Empty;
         return Result.Success();
-      })
-      .Bind(() => Result.Success<IOrder>(this));
+      });
 
-  public Result<IOrder> ChangeVehicle(string vehicle) =>
+  public Result ChangeVehicle(string vehicle) =>
     State
       .ChangeVehicle(() =>
       {
@@ -96,17 +93,15 @@ public class Order : IOrder
 
         Vehicle = vehicle;
         return Result.Success();
-      })
-      .Bind(() => Result.Success<IOrder>(this));
+      });
 
-  public Result<IOrder> RemoveVehicle() =>
+  public Result RemoveVehicle() =>
     State
       .RemoveVehicle(() =>
       {
         Vehicle = string.Empty;
         return Result.Success();
-      })
-      .Bind(() => Result.Success<IOrder>(this));
+      });
 
   public Result<T> Map<T>(Func<IOrder, T> mapping) => Result.Success(mapping(this));
 }
