@@ -10,7 +10,7 @@ namespace StateDesignPattern.API.Utils;
 
 public static class ResultExtensions
 {
-  private static ActionResult ConvertFailureToActionResult(string error) =>
+  private static ActionResult ConvertToActionResult(this string error) =>
     Enum.TryParse(error, out HttpStatusCode statusCode)
       ? new StatusCodeResult((int) statusCode)
       : new BadRequestObjectResult(error);
@@ -18,29 +18,29 @@ public static class ResultExtensions
   public static ActionResult EnvelopeAsOk(this Result result) =>
     result.IsSuccess
       ? new OkResult()
-      : ConvertFailureToActionResult(result.Error);
+      : result.Error.ConvertToActionResult();
 
   public static ActionResult EnvelopeAsOk<T>(this Result<T> result) =>
     result.IsSuccess
       ? new OkResult()
-      : ConvertFailureToActionResult(result.Error);
+      : result.Error.ConvertToActionResult();
 
   public static ActionResult<T> EnvelopeAsOkObject<T>(this Result<T> result) =>
     result.IsSuccess
       ? new OkObjectResult(result.Value)
-      : ConvertFailureToActionResult(result.Error);
+      : result.Error.ConvertToActionResult();
 
   public static ActionResult<T> EnvelopeAsCreated<T>(this Result<T> result)
     where T : IHasGuid =>
     result.IsSuccess
       ? new CreatedResult(result.Value.Id.ToString(), result.Value)
-      : ConvertFailureToActionResult(result.Error);
+      : result.Error.ConvertToActionResult();
   
   public static ActionResult EnvelopeWithRoute<T>(this Result<T> result, string targetRouteName)
     where T : IHasGuid =>
     result.IsSuccess
       ? new CreatedAtRouteResult(targetRouteName, new { id = result.Value.Id }, null)
-      : ConvertFailureToActionResult(result.Error);
+      : result.Error.ConvertToActionResult();
 
   public static async Task<ActionResult> EnvelopeWithRoute<T>(this Task<Result<T>> resultTask, string targetRouteName)
     where T : IHasGuid =>
@@ -50,7 +50,7 @@ public static class ResultExtensions
     result.IsSuccess
       ? new FileContentResult(result.Value.File, MediaTypeNames.Application.Pdf)
         { FileDownloadName = result.Value.Name }
-      : ConvertFailureToActionResult(result.Error);
+      : result.Error.ConvertToActionResult();
 
   public static async Task<ActionResult> EnvelopeWithPdf(this Task<Result<(byte[], string)>> resultTask) =>
     (await resultTask).EnvelopeWithPdf();
