@@ -29,6 +29,16 @@ public class OrderTests
     order.CurrentState.Should().Be(nameof(New));
   }
 
+  [Fact]
+  public void Map_method_returns_expected_result()
+  {
+    var order = Order.Create().Value;
+    var mapResult = order.Map(o => o);
+
+    mapResult.IsSuccess.Should().BeTrue();
+    mapResult.Value.Id.Should().Be(order.Id);
+  }
+
   [SuppressMessage("ReSharper", "InconsistentNaming")]
   public class Order_in_state_new
   {
